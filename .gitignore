@@ -1,0 +1,32 @@
+# VS-Code specific
+workspace.code-workspace
+.vscode/
+
+# MSVS specific
+.vs/
+
+# Visual Studio Community
+_deps/
+CMakeFiles/
+cmake/
+x64/
+x86/
+*.sln
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+
+# Some cmake stuff
+cmake_install.cmake
+CMakeCache.txt
+CPackConfig.cmake
+CPackSourceConfig.cmake
+
+# General
+bin/
+build/
+.DS_Store
+*.sh
+imgui.ini
+Makefile
+*.a
