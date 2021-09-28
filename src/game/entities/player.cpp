@@ -9,10 +9,16 @@ enum PlayerStates
 
 void PlayerInitStates(u32 behaviorId)
 {
+    Entity::RegisterKCLInit(behaviorId, PlayerInitKCL);
     Entity::RegisterStateCount(behaviorId, 3);
     Entity::RegisterState(behaviorId, PLAYER_ST_IDLE, PlayerIdleInit, PlayerIdleMain);
     Entity::RegisterState(behaviorId, PLAYER_ST_MOVE, PlayerMoveInit, PlayerMoveMain);
     Entity::RegisterState(behaviorId, PLAYER_ST_FALL, PlayerFallInit, PlayerFallMain, PlayerFallCleanup);
+}
+
+void PlayerInitKCL(Entity* ent)
+{
+    ent->kclBody.InitBounds({ 0, 0 }, { TILE_SIZE, TILE_SIZE * 2 });
 }
 
 void PlayerIdleInit(Entity* ent)

@@ -9,6 +9,7 @@ map<u32, StateInitFunction> Entity::behaviorInits =
 };
 
 map<u32, pair<u32, EntityState*>> Entity::behaviorStates;
+map<u32, KclInitFunction> Entity::kclInits;
 
 void Entity::CreateStates()
 {
@@ -30,6 +31,11 @@ void Entity::DeleteStates()
             delete[] behaviorStates[i].second;
         }
     }
+}
+
+void Entity::RegisterKCLInit(u32 behaviorId, KclInitFunction kclInit)
+{
+    kclInits[behaviorId] = kclInit;
 }
 
 void Entity::RegisterStateCount(u32 behaviorId, u32 numStates)
@@ -89,9 +95,9 @@ void Entity::DoState()
 
 void Entity::LoadKcl(u32* tiles, u32 width, u32 height)
 {
-    kclTiles = tiles;
-    kclWidth = width;
-    kclHeight = height;
+    kclBody.kclTiles = tiles;
+    kclBody.kclWidth = width;
+    kclBody.kclHeight = height;
 }
 
 EMU Entity::GetPositionX()
@@ -306,6 +312,10 @@ void Entity::UpdatePhysics()
 void Entity::Spawn(MEntity* ent)
 {
     behaviorId = BHV_PLAYER;
+    if (kclInits.find(behaviorId) != kclInits.end())
+    {
+        kclInits[behaviorId](this);
+    }
     if (HasState(0))
     {
         ChangeState(0);
@@ -314,8 +324,17 @@ void Entity::Spawn(MEntity* ent)
 
 void Entity::Draw()
 {
-    // TODO!!!!!
-    DrawRectangleV(kclBody.position, { TILE_SIZE, TILE_SIZE * 2 }, YELLOW);
+
+    // Draw KCL.
+    if (DEBUG_MODE)
+    {
+        DrawRectangleRec(
+            { kclBody.bounds.center.x - kclBody.bounds.halfSize.x / 2,
+            kclBody.bounds.center.y - kclBody.bounds.halfSize.y / 2,
+            kclBody.bounds.halfSize.x * 2, kclBody.bounds.halfSize.y * 2 },
+            ColorAlpha(YELLOW, 0.7f));
+    }
+
 }
 
 void Entity::Update()

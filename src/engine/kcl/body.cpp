@@ -1,5 +1,20 @@
 #include "body.h"
 
+void KclBody::InitBounds(Vector2 offset, Vector2 size)
+{
+    boundsOffset.x = offset.x + size.x / 4;
+    boundsOffset.y = offset.y + size.y / 4;
+    bounds.halfSize.x = size.x / 2;
+    bounds.halfSize.y = size.y / 2;
+}
+
+void KclBody::SetPosition(Vector2 pos)
+{
+    position.x = pos.x;
+    position.y = pos.y;
+    bounds.center = { position.x + boundsOffset.x, position.y + boundsOffset.y };
+}
+
 void KclBody::Update(float dt)
 {
 
@@ -38,6 +53,7 @@ void KclBody::Update(float dt)
     // TEMP.
     position.x += velocity.x * dt;
     position.y += velocity.y * dt;
+    bounds.center = { position.x + boundsOffset.x, position.y + boundsOffset.y };
     //if (position.y < 0) position.y = 0;
 
 }

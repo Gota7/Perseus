@@ -15,10 +15,12 @@ struct Entity;
 // State functions.
 typedef void (*StateInitFunction)(u32 behaviorId);
 typedef void (*StateFunction)(Entity* ent);
+typedef void (*KclInitFunction)(Entity* ent);
 
 // Entity state.
 struct EntityState
 {
+    void (*kclInit)(Entity* ent) = nullptr;
     void (*init)(Entity* ent) = nullptr;
     void (*main)(Entity* ent) = nullptr;
     void (*cleanup)(Entity* ent) = nullptr;
@@ -32,6 +34,7 @@ struct Entity
 private:
     u32 behaviorId;
     static std::map<u32, StateInitFunction> behaviorInits;
+    static std::map<u32, KclInitFunction> kclInits;
     static std::map<u32, std::pair<u32, EntityState*>> behaviorStates;
     int currState = -1;
     std::vector<int> cleanupStack;
@@ -41,6 +44,7 @@ private:
 public:
     static void CreateStates(); 
     static void DeleteStates();
+    static void RegisterKCLInit(u32 behaviorId, KclInitFunction kclInit);
     static void RegisterStateCount(u32 behaviorId, u32 numStates);
     static void RegisterState(u32 behaviorId, u32 stateId, StateFunction init = nullptr, StateFunction main = nullptr, StateFunction cleanup = nullptr);
     bool HasState(int stateId);
@@ -56,13 +60,8 @@ public:
 
     // Physics functions.
 private:
-    u32* kclTiles = nullptr;
-    u32 kclWidth = 0;
-    u32 kclHeight = 0;
     void UpdatePhysics();
 public:
-    bool canCollideWithTiles = true;
-    Rectangle boundingBox = { 0, 0, TILE_SIZE, TILE_SIZE };
     void LoadKcl(u32* tiles, u32 width, u32 height);
     EMU GetPositionX();
     EMU GetPositionY();

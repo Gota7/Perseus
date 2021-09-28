@@ -19,6 +19,7 @@ struct Entity;
 
 // Initialize states.
 void PlayerInitStates(u32 behaviorId);
+void PlayerInitKCL(Entity* ent);
 
 // Idle state.
 void PlayerIdleInit(Entity* ent);

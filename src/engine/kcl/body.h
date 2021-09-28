@@ -2,6 +2,7 @@
 
 #include "raylib.h"
 #include "aabb.h"
+#include "../../types.h"
 
 // KCL body.
 struct KclBody
@@ -22,6 +23,9 @@ struct KclBody
     Vector2 boundsOffset = { 0, 0 };
 
     // Kcl map information.
+    u32* kclTiles = nullptr;
+    u32 kclWidth = 0;
+    u32 kclHeight = 0;
 
     // Results.
     bool wasHittingLeft = false;
@@ -38,6 +42,8 @@ struct KclBody
     bool isSolid = false;
 
     // Physics functions.
+    void InitBounds(Vector2 offset, Vector2 size);
+    void SetPosition(Vector2 pos);
     void Update(float dt);
 
 };

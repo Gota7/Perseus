@@ -9,10 +9,32 @@
 #define __bswap_64(x) OSSwapInt64(x)
 #endif
 
+s16 swap_16(s16 n) {
+    s16 ret;
+    swab((char*)&n, (char*)&ret, 2);
+    return ret;
+}
+
+s32 swap_32(s32 n) {
+    s32 ret;
+    swab((char*)&n, (char*)&ret, 4);
+    return ret;
+}
+
+s64 swap_64(s64 n) {
+    s64 ret;
+    swab((char*)&n, (char*)&ret, 8);
+    return ret;
+}
+
 #ifdef _WIN32
-#define __bswap_16(x) _byteswap_ushort(x)
-#define __bswap_32(x) _byteswap_ulong(x)
-#define __bswap_64(x) _byteswap_uint64(x)
+//#define __bswap_16(x) _byteswap_ushort(x)
+//#define __bswap_32(x) _byteswap_ulong(x)
+//#define __bswap_64(x) _byteswap_uint64(x)
+#include <string.h>
+#define __bswap_16(x) swap_16(x)
+#define __bswap_32(x) swap_32(x)
+#define __bswap_64(x) swap_64(x)
 #endif
 
 using namespace std;

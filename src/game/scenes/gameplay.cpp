@@ -12,7 +12,6 @@ void Gameplay::Initialize()
     e.kclBody.position = { TILE_SIZE * 12, TILE_SIZE * 9 };
     e.Spawn(NULL);
     e.LoadKcl(&map->layers[LAYER_KCL].tiles[0], map->width, map->height);
-    e.boundingBox.height = TILE_SIZE * 2;
 }
 
 void Gameplay::Draw()
