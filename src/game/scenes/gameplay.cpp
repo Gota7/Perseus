@@ -9,7 +9,7 @@ void Gameplay::Initialize()
 
     Tilemap::LoadTilemap(mapName);
     map = Tilemap::GetTilemap(mapName);
-    e.position = { TILE_SIZE * 12, TILE_SIZE * 9 };
+    e.kclBody.position = { TILE_SIZE * 12, TILE_SIZE * 9 };
     e.Spawn(NULL);
     e.LoadKcl(&map->layers[LAYER_KCL].tiles[0], map->width, map->height);
     e.boundingBox.height = TILE_SIZE * 2;

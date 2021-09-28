@@ -3,6 +3,7 @@
 #include "input.h"
 #include "medusa.h"
 #include "screenData.h"
+#include "kcl.h"
 #include "../game/entities.h"
 
 // Forward declare.
@@ -46,13 +47,8 @@ public:
     void ChangeState(int newStateId);
     int GetState();
 
-    // Movement info.
-    Vector2 position = { 0, 0 };
-    Vector2 velocity = { 0, 0 };
-    Vector2 acceleration = { 0, 0 };
-    Vector2 force = { 0, 0 };
-    Vector2 maxVelocity = { 100, 100 };
-    float mass = 1;
+    // Body.
+    KclBody kclBody;
 
     // Entity data.
     u32 id;

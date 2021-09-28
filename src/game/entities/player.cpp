@@ -61,9 +61,9 @@ void PlayerMoveMain(Entity* ent)
 
     // Movement direction.
     int moveDir = 0;
-    if (ent->velocity.x < 0)
+    if (ent->kclBody.velocity.x < 0)
         moveDir = 1;
-    if (ent->velocity.x > 0)
+    if (ent->kclBody.velocity.x > 0)
         moveDir = 2;
         
     // Get input.
@@ -86,7 +86,7 @@ void PlayerMoveMain(Entity* ent)
         // Going left but need to slow down to stop.
         else if (moveDir == 1)
         {
-            if (ent->velocity.x > EMU_TO_FLOAT(-0x500))
+            if (ent->kclBody.velocity.x > EMU_TO_FLOAT(-0x500))
             {
                 ent->SetVelocityX(0);
             }
@@ -99,7 +99,7 @@ void PlayerMoveMain(Entity* ent)
         // Going right but need to slow down to stop.
         else
         {
-            if (ent->velocity.x < EMU_TO_FLOAT(0x500))
+            if (ent->kclBody.velocity.x < EMU_TO_FLOAT(0x500))
             {
                 ent->SetVelocityX(0);
             }
@@ -178,9 +178,9 @@ void PlayerFallMain(Entity* ent)
 
     // Movement direction.
     int moveDir = 0;
-    if (ent->velocity.x < 0)
+    if (ent->kclBody.velocity.x < 0)
         moveDir = 1;
-    if (ent->velocity.x > 0)
+    if (ent->kclBody.velocity.x > 0)
         moveDir = 2;
         
     // Get input.
@@ -237,9 +237,9 @@ void PlayerFallMain(Entity* ent)
     }
 
     // TODO: REPLACE WITH TRUE FLOOR COLLISION.
-    if (ent->position.y >= FLOOR)
+    if (ent->kclBody.position.y >= FLOOR)
     {
-        ent->position.y = FLOOR;
+        ent->kclBody.position.y = FLOOR;
         ent->SetVelocityY(0);
         ent->ChangeState(PLAYER_ST_MOVE);
     }

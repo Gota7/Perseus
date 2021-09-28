@@ -4,6 +4,9 @@
 #include "raymath.h"
 #include "screenData.h"
 
+#include "kcl/aabb.h"
+#include "kcl/body.h"
+
 enum KclTypes
 {
     KCL_NONE,

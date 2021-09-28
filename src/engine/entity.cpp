@@ -96,86 +96,91 @@ void Entity::LoadKcl(u32* tiles, u32 width, u32 height)
 
 EMU Entity::GetPositionX()
 {
-    return FLOAT_TO_EMU(position.x);
+    return FLOAT_TO_EMU(kclBody.position.x);
 }
 
 EMU Entity::GetPositionY()
 {
-    return FLOAT_TO_EMU(position.y);
+    return FLOAT_TO_EMU(kclBody.position.y);
 }
 
 EMU Entity::GetVelocityX()
 {
-    return FLOAT_TO_EMU(velocity.x / FPS);
+    return FLOAT_TO_EMU(kclBody.velocity.x / FPS);
 }
 
 EMU Entity::GetVelocityY()
 {
-    return FLOAT_TO_EMU(velocity.y / FPS);
+    return FLOAT_TO_EMU(kclBody.velocity.y / FPS);
 }
 
 EMU Entity::GetAccelerationX()
 {
-    return FLOAT_TO_EMU(acceleration.x / FPS / FPS);
+    return FLOAT_TO_EMU(kclBody.acceleration.x / FPS / FPS);
 }
 
 EMU Entity::GetAccelerationY()
 {
-    return FLOAT_TO_EMU(acceleration.y / FPS / FPS);
+    return FLOAT_TO_EMU(kclBody.acceleration.y / FPS / FPS);
 }
 
 void Entity::SetPositionX(EMU val)
 {
-    position.x = EMU_TO_FLOAT(val);
+    kclBody.position.x = EMU_TO_FLOAT(val);
 }
 
 void Entity::SetPositionY(EMU val)
 {
-    position.y = EMU_TO_FLOAT(val);
+    kclBody.position.y = EMU_TO_FLOAT(val);
 }
 
 void Entity::SetVelocityX(EMU val)
 {
-    velocity.x = EMU_TO_FLOAT(val);
+    kclBody.velocity.x = EMU_TO_FLOAT(val);
 }
 
 void Entity::SetVelocityY(EMU val)
 {
-    velocity.y = EMU_TO_FLOAT(val);
+    kclBody.velocity.y = EMU_TO_FLOAT(val);
 }
 
 void Entity::SetMaxVelocityX(EMU val)
 {
-    maxVelocity.x = EMU_TO_FLOAT(val);
+    kclBody.maxVelocity.x = EMU_TO_FLOAT(val);
 }
 
 void Entity::SetMaxVelocityY(EMU val)
 {
-    maxVelocity.y = EMU_TO_FLOAT(val);
+    kclBody.maxVelocity.y = EMU_TO_FLOAT(val);
 }
 
 void Entity::SetAccelerationX(EMU val)
 {
-    acceleration.x = EMU_TO_FLOAT(val);
+    kclBody.acceleration.x = EMU_TO_FLOAT(val);
 }
 
 void Entity::SetAccelerationY(EMU val)
 {
-    acceleration.y = EMU_TO_FLOAT(val);
+    kclBody.acceleration.y = EMU_TO_FLOAT(val);
 }
 
 void Entity::ApplyForceX(EMU val)
 {
-    force.x += EMU_TO_FLOAT(val);
+    kclBody.force.x += EMU_TO_FLOAT(val);
 }
 
 void Entity::ApplyForceY(EMU val)
 {
-    force.y += EMU_TO_FLOAT(val);
+    kclBody.force.y += EMU_TO_FLOAT(val);
 }
 
 void Entity::UpdatePhysics()
 {
+
+    // Update body.
+    kclBody.Update(GetFrameTime());
+
+    /*
 
     // Delta time.
     float dt = (float)1 / FPS;
@@ -294,7 +299,7 @@ void Entity::UpdatePhysics()
     if (doMoveY)
         position.y += toMoveY;
     force.x = 0;
-    force.y = 0;
+    force.y = 0;*/
 
 }
 
@@ -309,7 +314,8 @@ void Entity::Spawn(MEntity* ent)
 
 void Entity::Draw()
 {
-    DrawRectangleV(position, { TILE_SIZE, TILE_SIZE * 2 }, YELLOW);
+    // TODO!!!!!
+    DrawRectangleV(kclBody.position, { TILE_SIZE, TILE_SIZE * 2 }, YELLOW);
 }
 
 void Entity::Update()
