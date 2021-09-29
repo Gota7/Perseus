@@ -243,9 +243,14 @@ void PlayerFallMain(Entity* ent)
     }
 
     // TODO: REPLACE WITH TRUE FLOOR COLLISION.
-    if (ent->kclBody.position.y >= FLOOR)
+    /*if (ent->kclBody.position.y >= FLOOR)
     {
         ent->kclBody.position.y = FLOOR;
+        ent->SetVelocityY(0);
+        ent->ChangeState(PLAYER_ST_MOVE);
+    }*/
+    if (ent->kclBody.hittingDown)
+    {
         ent->SetVelocityY(0);
         ent->ChangeState(PLAYER_ST_MOVE);
     }

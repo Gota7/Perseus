@@ -1,7 +1,6 @@
 #pragma once
 
 #include "raylib.h"
-#include "aabb.h"
 #include "types.h"
 #include "../../types.h"
 
@@ -20,7 +19,7 @@ struct KclBody
     Vector2 prevVelocity = { 0, 0 };
     
     // Bounding box.
-    KclAABB bounds;
+    Vector2 kclSize;
     Vector2 boundsOffset = { 0, 0 };
 
     // Kcl map information.
@@ -52,6 +51,6 @@ struct KclBody
 
     // Private physics functions.
 private:
-    bool CheckGround(float startY, float destY, float tileSize, float& outY);
+    bool CheckGround(float startY, float destY, float x, float tileSize, float& outY);
 
 };

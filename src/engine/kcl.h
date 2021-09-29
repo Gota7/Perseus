@@ -4,7 +4,6 @@
 #include "raymath.h"
 #include "screenData.h"
 
-#include "kcl/aabb.h"
 #include "kcl/body.h"
 #include "kcl/types.h"
 

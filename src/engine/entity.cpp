@@ -336,9 +336,9 @@ void Entity::Draw()
     if (DEBUG_KCL)
     {
         DrawRectangleRec(
-            { kclBody.bounds.center.x - kclBody.bounds.halfSize.x / 2,
-            kclBody.bounds.center.y - kclBody.bounds.halfSize.y / 2,
-            kclBody.bounds.halfSize.x * 2, kclBody.bounds.halfSize.y * 2 },
+            { kclBody.position.x + kclBody.boundsOffset.x,
+            kclBody.position.y + kclBody.boundsOffset.y,
+            kclBody.kclSize.x, kclBody.kclSize.y },
             ColorAlpha(YELLOW, 0.7f));
     }
 
