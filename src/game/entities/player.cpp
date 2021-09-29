@@ -45,6 +45,12 @@ void PlayerIdleMain(Entity* ent)
         ent->ChangeState(PLAYER_ST_MOVE);
     }
     
+    // Fall.
+    if (!ent->kclBody.hittingDown)
+    {
+        ent->ChangeState(PLAYER_ST_FALL);
+    }
+
 }
 
 void PlayerMoveInit(Entity* ent)
@@ -161,6 +167,12 @@ void PlayerMoveMain(Entity* ent)
 
     }
 
+    // Fall.
+    if (!ent->kclBody.hittingDown)
+    {
+        ent->ChangeState(PLAYER_ST_FALL);
+    }
+
 }
 
 void PlayerFallInit(Entity* ent)
@@ -249,6 +261,7 @@ void PlayerFallMain(Entity* ent)
         ent->SetVelocityY(0);
         ent->ChangeState(PLAYER_ST_MOVE);
     }*/
+    // Floor collision.
     if (ent->kclBody.hittingDown)
     {
         ent->SetVelocityY(0);

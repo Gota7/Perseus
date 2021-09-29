@@ -76,12 +76,16 @@ void KclBody::Update(float dt)
     {
         float collidesY;
         hittingDown = CheckGround(prevY, newY, prevX, 16, collidesY);
-        printf("%f %f %f\n", prevPosition.y, position.y, collidesY);
+        if (prevY != newY && hittingDown) printf("%f %f %f\n", prevPosition.y, position.y, collidesY);
         if (hittingDown)
         {
             newY = collidesY;
             position.y = newY - boundsOffset.y;
         }
+    }
+    else
+    {
+        hittingDown = false;
     }
 
 }
