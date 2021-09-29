@@ -15,7 +15,7 @@ struct Entity;
 // State functions.
 typedef void (*StateInitFunction)(u32 behaviorId);
 typedef void (*StateFunction)(Entity* ent);
-typedef void (*KclInitFunction)(Entity* ent);
+typedef void (*InitCleanupFunction)(Entity* ent);
 
 // Entity state.
 struct EntityState
@@ -34,7 +34,8 @@ struct Entity
 private:
     u32 behaviorId;
     static std::map<u32, StateInitFunction> behaviorInits;
-    static std::map<u32, KclInitFunction> kclInits;
+    static std::map<u32, InitCleanupFunction> inits;
+    static std::map<u32, InitCleanupFunction> cleanups;
     static std::map<u32, std::pair<u32, EntityState*>> behaviorStates;
     int currState = -1;
     std::vector<int> cleanupStack;
@@ -44,7 +45,8 @@ private:
 public:
     static void CreateStates(); 
     static void DeleteStates();
-    static void RegisterKCLInit(u32 behaviorId, KclInitFunction kclInit);
+    static void RegisterInit(u32 behaviorId, InitCleanupFunction init);
+    static void RegisterCleanup(u32 behaviorId, InitCleanupFunction cleanup);
     static void RegisterStateCount(u32 behaviorId, u32 numStates);
     static void RegisterState(u32 behaviorId, u32 stateId, StateFunction init = nullptr, StateFunction main = nullptr, StateFunction cleanup = nullptr);
     bool HasState(int stateId);
@@ -57,6 +59,7 @@ public:
     // Entity data.
     u32 id;
     u64 data[2];
+    void* extData; // For individual entities to take advantage of storing extra data.
 
     // Physics functions.
 private:

@@ -9,7 +9,8 @@ map<u32, StateInitFunction> Entity::behaviorInits =
 };
 
 map<u32, pair<u32, EntityState*>> Entity::behaviorStates;
-map<u32, KclInitFunction> Entity::kclInits;
+map<u32, InitCleanupFunction> Entity::inits;
+map<u32, InitCleanupFunction> Entity::cleanups;
 
 void Entity::CreateStates()
 {
@@ -33,9 +34,14 @@ void Entity::DeleteStates()
     }
 }
 
-void Entity::RegisterKCLInit(u32 behaviorId, KclInitFunction kclInit)
+void Entity::RegisterInit(u32 behaviorId, InitCleanupFunction init)
 {
-    kclInits[behaviorId] = kclInit;
+    inits[behaviorId] = init;
+}
+
+void Entity::RegisterCleanup(u32 behaviorId, InitCleanupFunction cleanup)
+{
+    cleanups[behaviorId] = cleanup;
 }
 
 void Entity::RegisterStateCount(u32 behaviorId, u32 numStates)
@@ -312,9 +318,10 @@ void Entity::UpdatePhysics()
 void Entity::Spawn(MEntity* ent)
 {
     behaviorId = BHV_PLAYER;
-    if (kclInits.find(behaviorId) != kclInits.end())
+    id = behaviorId;
+    if (inits.find(behaviorId) != inits.end())
     {
-        kclInits[behaviorId](this);
+        inits[behaviorId](this);
     }
     if (HasState(0))
     {
@@ -326,7 +333,7 @@ void Entity::Draw()
 {
 
     // Draw KCL.
-    if (DEBUG_MODE)
+    if (DEBUG_KCL)
     {
         DrawRectangleRec(
             { kclBody.bounds.center.x - kclBody.bounds.halfSize.x / 2,
@@ -341,4 +348,12 @@ void Entity::Update()
 {
     DoState();
     UpdatePhysics();
+}
+
+void Entity::Kill()
+{
+    if (cleanups.find(id) != cleanups.end())
+    {
+        cleanups[id](this);
+    }    
 }

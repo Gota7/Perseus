@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../../types.h"
+
 enum KclTypes
 {
     KCL_NONE,
@@ -27,3 +29,5 @@ enum KclTypes
     KCL_SPIKES_LEFT,
     KCL_SPIKES_RIGHT
 };
+
+bool KclTileHitsDownward(u32 type, float startY, float endY, float startX, float endX, float tileSize, float& hitY);

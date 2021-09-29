@@ -20,6 +20,10 @@ void Gameplay::Draw()
     {
         map->Draw(i);
     }
+    if (DEBUG_KCL)
+    {
+        map->Draw(LAYER_KCL);
+    }
     e.Draw();
 }
 
