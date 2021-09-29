@@ -5,6 +5,7 @@
 enum KclTypes
 {
     KCL_NONE,
+    KCL_AIR,
     KCL_SOLID,
     KCL_SOLID_ON_TOP,
     KCL_SOLID_ON_BOTTOM,
@@ -30,4 +31,5 @@ enum KclTypes
     KCL_SPIKES_RIGHT
 };
 
+// Check if intersecting downwards with a tile. All positions are relative to the tile. Returns if it, and where along the Y axis.
 bool KclTileHitsDownward(u32 type, float startY, float endY, float startX, float endX, float tileSize, float& hitY);

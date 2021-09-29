@@ -15,7 +15,7 @@ u32 KclBody::GetTileType(s32 x, s32 y)
 {
     if (x < 0 || x >= kclWidth) return KCL_SOLID;
     if (y < 0 || y >= kclHeight) return KCL_NONE;
-    return kclTiles[y * kclWidth + x];
+    return kclTiles[y * kclWidth + x] & 0xFFFF;
 }
 
 void KclBody::InitBounds(Vector2 offset, Vector2 size)
@@ -33,7 +33,7 @@ void KclBody::SetPosition(Vector2 pos)
 void KclBody::Update(float dt)
 {
 
-    // Backups.
+    // Backup previous state information.
     prevPosition = position;
     prevVelocity = velocity;
     wasHittingLeft = hittingLeft;
@@ -41,13 +41,15 @@ void KclBody::Update(float dt)
     wasHittingUp = hittingUp;
     wasHittingDown = hittingDown;
 
-    // Physics update.
+    // Set new acceleration and velocity, reset our force queue.
     acceleration.x = force.x / mass;
     acceleration.y = force.y / mass;
     force.x = 0;
     force.y = 0;
     velocity.x += acceleration.x * dt;
     velocity.y += acceleration.y * dt;
+
+    // Max sure we cap velocity.
     if (velocity.x >= maxVelocity.x)
     {
         velocity.x = maxVelocity.x;
@@ -65,24 +67,27 @@ void KclBody::Update(float dt)
         velocity.y = -maxVelocity.y;
     }
 
-    // TEMP.
+    // Increment position, and calculate new and past coordinates for collision box.
     position.x += velocity.x * dt;
     position.y += velocity.y * dt;
     float prevX = prevPosition.x + boundsOffset.x;
     float prevY = prevPosition.y + boundsOffset.y;
     float newX = position.x + boundsOffset.x;
     float newY = position.y + boundsOffset.y;
+
+    // If moving downwards or stationary, we may hit the ground.
     if (velocity.y >= 0)
     {
         float collidesY;
-        hittingDown = CheckGround(prevY, newY, prevX, 16, collidesY);
-        if (prevY != newY && hittingDown) printf("%f %f %f\n", prevPosition.y, position.y, collidesY);
+        hittingDown = CheckGround(prevY, newY, newX, 16, collidesY);
         if (hittingDown)
         {
             newY = collidesY;
             position.y = newY - boundsOffset.y;
         }
     }
+
+    // If we are moving upwards, hitting the ground is impossible.
     else
     {
         hittingDown = false;
@@ -94,6 +99,7 @@ bool KclBody::CheckGround(float startY, float destY, float x, float tileSize, fl
 {
     
     // Get starting and end tiles.
+    // Notice that we are checking against the ground, so we should move where we check to the bottom of the hitbox.
     startY += kclSize.y;
     destY += kclSize.y;
     s32 y1 = Pos2Tile(startY, tileSize);
@@ -103,65 +109,65 @@ bool KclBody::CheckGround(float startY, float destY, float x, float tileSize, fl
     s32 x1 = Pos2Tile(minX, tileSize);
     s32 x2 = Pos2Tile(maxX, tileSize);
 
-    // All intersected X tiles.
-    for (s32 x = x1; x < x2; x++)
+    // Check all tiles for potential collision.
+    for (s32 y = y1; y <= y2; y++)
     {
 
-        // Bounds.
-        float xTileStart;
-        float xTileEnd;
+        // We need to get where our hitbox intersects along the tile.
+        float yTileStart;
+        float yTileEnd;
 
         // Special case, not starting from top of tile.
-        if (x == x1)
+        if (y == y1)
         {
-            xTileStart = (int)minX % (int)tileSize;
-            xTileEnd = tileSize;
+            yTileStart = (int)startY % (int)tileSize;
+            yTileEnd = tileSize;
         }
 
         // Special case, not ending at bottom of tile.
-        else if(x == x2 - 1)
+        else if (y == y2)
         {
-            xTileStart = 0;
-            xTileEnd = tileSize;
+            yTileStart = 0;
+            yTileEnd = (int)destY % (int)tileSize;
         }
 
         // Entire tile.
         else
         {
-            xTileStart = 0;
-            xTileEnd = (int)maxX % (int)tileSize;
+            yTileStart = 0;
+            yTileEnd = tileSize;
         }
 
-        // Check all tiles for potential collision.
-        for (s32 y = y1; y <= y2; y++)
+        // All intersected X tiles.
+        for (s32 x = x1; x <= x2; x++)
         {
 
-            // Bounds.
-            float yTileStart;
-            float yTileEnd;
+            // Get where our hitbox intersects along the tile.
+            float xTileStart;
+            float xTileEnd;
 
-            // Special case, not starting from top of tile.
-            if (y == y1)
+            // Special case, not starting from left of tile.
+            if (x == x1)
             {
-                yTileStart = (int)startY % (int)tileSize;
-                yTileEnd = tileSize;
+                xTileStart = (int)minX % (int)tileSize;
+                xTileEnd = tileSize;
             }
 
-            // Special case, not ending at bottom of tile.
-            else if(y == y2 - 1)
+            // Special case, not ending at right of tile.
+            else if (x == x2)
             {
-                yTileStart = 0;
-                yTileEnd = tileSize;
+                xTileStart = 0;
+                xTileEnd = (int)maxX % (int)tileSize;
             }
 
             // Entire tile.
             else
-            {
-                yTileStart = 0;
-                yTileEnd = (int)destY % (int)tileSize;
+            { 
+                xTileStart = 0;
+                xTileEnd = tileSize;
             }
 
-            // Collision.
+            // Finally check if we collide with this tile. If so, we return where.
             float hitY;
             bool collides = KclTileHitsDownward(GetTileType(x, y), yTileStart, yTileEnd, xTileStart, xTileEnd, tileSize, hitY);
             if (collides)
