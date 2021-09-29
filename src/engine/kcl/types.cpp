@@ -33,6 +33,18 @@ bool KclTileHitsDownward(u32 type, float startY, float endY, float startX, float
 
     }
 
+    // Top-right space slopes.
+    else if (type == KCL_SLOPE_TOP_RIGHT_SPACE)
+    {
+        if (startX <= 0) { hitY = 0; }
+        else if (startX > tileSize) { hitY = tileSize; }
+        else { hitY = startX; }
+        return true;
+    }
+
+    // TODO:
+    else if (type == KCL_LADDER || type == KCL_LADDER_LEFT || type == KCL_LADDER_RIGHT) { return false; }
+
     // For everything else, pretend it's just a solid block.
     hitY = startY;
     return true;
