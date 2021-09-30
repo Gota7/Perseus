@@ -35,3 +35,4 @@ enum KclTypes
 bool KclTileHitsDownward(u32 type, float startY, float endY, float startX, float endX, float tileSize, float& hitY);
 bool KclTileHitsUpward(u32 type, float startY, float endY, float startX, float endX, float tileSize, float& hitY);
 bool KclTileHitsRight(u32 type, float startX, float endX, float startY, float endY, float tileSize, float& hitX);
+bool KclTileHitsLeft(u32 type, float startX, float endX, float startY, float endY, float tileSize, float& hitX);

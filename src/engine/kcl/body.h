@@ -54,5 +54,6 @@ private:
     bool CheckGround(float startY, float destY, float x, float tileSize, float& outY);
     bool CheckCeiling(float startY, float destY, float x, float tileSize, float& outY);
     bool CheckRight(float startX, float destX, float y, float tileSize, float& outX);
+    bool CheckLeft(float startX, float destX, float y, float tileSize, float& outX);
 
 };

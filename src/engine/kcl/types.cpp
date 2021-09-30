@@ -233,11 +233,55 @@ bool KclTileHitsRight(u32 type, float startX, float endX, float startY, float en
     // Pass-through.
     else if (type == KCL_SOLID_ON_TOP || type == KCL_SOLID_ON_LEFT || type == KCL_SOLID_ON_BOTTOM) { return false; }
 
+    // Top-right space slopes.
+    else if (type == KCL_SLOPE_TOP_RIGHT_SPACE)
+    {
+        if (startX <= 0)
+        {
+            hitX = startX;
+            return true;
+        }
+        else if (startX > endY)
+        {
+            return false;
+        }
+        else
+        {
+            hitX = endY;
+            return true;
+        }
+    }
+
     // TODO:
     else if (type == KCL_LADDER || type == KCL_LADDER_LEFT || type == KCL_LADDER_RIGHT) { return false; }
 
     // For everything else, pretend it's just a solid block.
     hitX = startX;
+    return true;
+
+}
+
+bool KclTileHitsLeft(u32 type, float startX, float endX, float startY, float endY, float tileSize, float& hitX)
+{
+
+    // No collision here.
+    if (type == KCL_NONE || type == KCL_AIR) { return false; }
+
+    // Generic solid collision.
+    else if (type == KCL_SOLID)
+    {
+        hitX = endX;
+        return true; 
+    }
+
+    // Pass-through.
+    else if (type == KCL_SOLID_ON_TOP || type == KCL_SOLID_ON_LEFT || type == KCL_SOLID_ON_BOTTOM) { return false; }
+
+    // TODO:
+    else if (type == KCL_LADDER || type == KCL_LADDER_LEFT || type == KCL_LADDER_RIGHT) { return false; }
+
+    // For everything else, pretend it's just a solid block.
+    hitX = endX;
     return true;
 
 }
