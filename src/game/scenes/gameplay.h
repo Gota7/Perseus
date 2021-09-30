@@ -7,7 +7,7 @@
 struct Gameplay : public Scene
 {
 
-    std::string mapName = "TitleScreen";
+    std::string mapName = "KclTest";
     Tilemap* map;
     Entity e;
 
