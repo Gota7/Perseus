@@ -1,5 +1,6 @@
 #include "body.h"
 #include <stdio.h>
+#include <tgmath.h>
 
 s32 KclBody::Pos2Tile(float pos, float tileSize)
 {
@@ -68,11 +69,31 @@ void KclBody::Update(float dt)
     }
 
     // Increment position, and calculate new and past coordinates for collision box.
-    position.x += velocity.x * dt;
-    position.y += velocity.y * dt;
-    float prevX = prevPosition.x + boundsOffset.x;
-    float prevY = prevPosition.y + boundsOffset.y;
+    float currY = roundf(position.y + boundsOffset.y);
+    position.x += velocity.x * dt;   
+    float prevX = roundf(prevPosition.x + boundsOffset.x);   
     float newX = position.x + boundsOffset.x;
+    
+
+    // If moving rightwards or stationary, we may hit the wall.
+    if (velocity.x >= 0)
+    {
+        float collidesX;
+        hittingRight = CheckRight(prevX, newX, currY, 16, collidesX);
+        if (hittingRight)
+        {
+            newX = collidesX;
+            position.x = newX - boundsOffset.x;
+        }
+    }
+    else
+    {
+        hittingRight = false;
+    }
+
+    // Increment position for Y now.
+    position.y += velocity.y * dt;
+    float prevY = roundf(prevPosition.y + boundsOffset.y);
     float newY = position.y + boundsOffset.y;
 
     // If moving downwards or stationary, we may hit the ground.
@@ -92,22 +113,6 @@ void KclBody::Update(float dt)
     {
         hittingDown = false;
     }
-
-    // If moving rightwards or stationary, we may hit the wall.
-    /*if (velocity.x >= 0)
-    {
-        float collidesX;
-        hittingRight = CheckRight(prevX, newX, newY, 16, collidesX);
-        if (hittingRight)
-        {
-            newX = collidesX;
-            position.x = newX - boundsOffset.x;
-        }
-    }
-    else
-    {
-        hittingRight = false;
-    }*/
 
     // If moving upwards or stationary, we may hit the ceiling.
     if (velocity.y <= 0)
@@ -318,7 +323,7 @@ bool KclBody::CheckRight(float startX, float destX, float y, float tileSize, flo
     s32 x1 = Pos2Tile(startX, tileSize);
     s32 x2 = Pos2Tile(destX, tileSize);
     float minY = y;
-    float maxY = y + kclSize.y - 1; // Prevent getting stuck on ground.
+    float maxY = y + kclSize.y; // Prevent getting stuck on ground.
     s32 y1 = Pos2Tile(minY, tileSize);
     s32 y2 = Pos2Tile(maxY, tileSize);
 
