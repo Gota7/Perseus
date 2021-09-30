@@ -93,6 +93,40 @@ void KclBody::Update(float dt)
         hittingDown = false;
     }
 
+    // If moving rightwards or stationary, we may hit the wall.
+    /*if (velocity.x >= 0)
+    {
+        float collidesX;
+        hittingRight = CheckRight(prevX, newX, newY, 16, collidesX);
+        if (hittingRight)
+        {
+            newX = collidesX;
+            position.x = newX - boundsOffset.x;
+        }
+    }
+    else
+    {
+        hittingRight = false;
+    }*/
+
+    // If moving upwards or stationary, we may hit the ceiling.
+    if (velocity.y <= 0)
+    {
+        float collidesY;
+        hittingUp = CheckCeiling(prevY, newY, newX, 16, collidesY);
+        if (hittingUp)
+        {
+            newY = collidesY;
+            position.y = newY - boundsOffset.y;
+        }
+    }
+
+    // If we are moving downwards, hitting the ceiling is impossible.
+    else
+    {
+        hittingUp = false;
+    }
+
 }
 
 bool KclBody::CheckGround(float startY, float destY, float x, float tileSize, float& outY)
@@ -182,6 +216,185 @@ bool KclBody::CheckGround(float startY, float destY, float x, float tileSize, fl
 
     // No collision found, simply return.
     outY = destY;
+    return false;
+
+}
+
+bool KclBody::CheckCeiling(float startY, float destY, float x, float tileSize, float& outY)
+{
+    
+    // Get starting and end tiles.
+    s32 y1 = Pos2Tile(startY, tileSize);
+    s32 y2 = Pos2Tile(destY, tileSize);
+    float minX = x;
+    float maxX = x + kclSize.x;
+    s32 x1 = Pos2Tile(minX, tileSize);
+    s32 x2 = Pos2Tile(maxX, tileSize);
+
+    // Check all tiles for potential collision.
+    for (s32 y = y1; y >= y2; y--)
+    {
+
+        // We need to get where our hitbox intersects along the tile.
+        float yTileStart;
+        float yTileEnd;
+
+        // Special case, not starting from top of tile.
+        if (y == y1)
+        {
+            yTileStart = (int)startY % (int)tileSize;
+            yTileEnd = tileSize;
+        }
+
+        // Special case, not ending at bottom of tile.
+        else if (y == y2)
+        {
+            yTileStart = 0;
+            yTileEnd = (int)destY % (int)tileSize;
+        }
+
+        // Entire tile.
+        else
+        {
+            yTileStart = 0;
+            yTileEnd = tileSize;
+        }
+
+        // All intersected X tiles.
+        for (s32 x = x1; x <= x2; x++)
+        {
+
+            // Get where our hitbox intersects along the tile.
+            float xTileStart;
+            float xTileEnd;
+
+            // Special case, not starting from left of tile.
+            if (x == x1)
+            {
+                xTileStart = (int)minX % (int)tileSize;
+                xTileEnd = tileSize;
+            }
+
+            // Special case, not ending at right of tile.
+            else if (x == x2)
+            {
+                xTileStart = 0;
+                xTileEnd = (int)maxX % (int)tileSize;
+            }
+
+            // Entire tile.
+            else
+            { 
+                xTileStart = 0;
+                xTileEnd = tileSize;
+            }
+
+            // Finally check if we collide with this tile. If so, we return where.
+            float hitY;
+            bool collides = KclTileHitsUpward(GetTileType(x, y), yTileStart, yTileEnd, xTileStart, xTileEnd, tileSize, hitY);
+            if (collides)
+            {
+                outY = Tile2Pos(y, tileSize) + hitY;
+                return true;
+            }
+
+        }
+
+    }
+
+    // No collision found, simply return.
+    outY = destY;
+    return false;
+
+}
+
+bool KclBody::CheckRight(float startX, float destX, float y, float tileSize, float& outX)
+{
+    
+    // Get starting and end tiles.
+    // Notice that we are checking against the right, so we should move where we check to the right of the hitbox.
+    startX += kclSize.x;
+    destX += kclSize.x;
+    s32 x1 = Pos2Tile(startX, tileSize);
+    s32 x2 = Pos2Tile(destX, tileSize);
+    float minY = y;
+    float maxY = y + kclSize.y - 1; // Prevent getting stuck on ground.
+    s32 y1 = Pos2Tile(minY, tileSize);
+    s32 y2 = Pos2Tile(maxY, tileSize);
+
+    // All intersected X tiles.
+    for (s32 x = x1; x <= x2; x++)
+    {
+
+        // Get where our hitbox intersects along the tile.
+        float xTileStart;
+        float xTileEnd;
+
+        // Special case, not starting from left of tile.
+        if (x == x1)
+        {
+            xTileStart = (int)startX % (int)tileSize;
+            xTileEnd = tileSize;
+        }
+
+        // Special case, not ending at right of tile.
+        else if (x == x2)
+        {
+            xTileStart = 0;
+            xTileEnd = (int)destX % (int)tileSize;
+        }
+
+        // Entire tile.
+        else
+        { 
+            xTileStart = 0;
+            xTileEnd = tileSize;
+        }
+
+        // Check all tiles for potential collision.
+        for (s32 y = y1; y <= y2; y++)
+        {
+
+            // We need to get where our hitbox intersects along the tile.
+            float yTileStart;
+            float yTileEnd;
+
+            // Special case, not starting from top of tile.
+            if (y == y1)
+            {
+                yTileStart = (int)minY % (int)tileSize;
+                yTileEnd = tileSize;
+            }
+
+            // Special case, not ending at bottom of tile.
+            else if (y == y2)
+            {
+                yTileStart = 0;
+                yTileEnd = (int)maxY % (int)tileSize;
+            }
+
+            // Entire tile.
+            else
+            {
+                yTileStart = 0;
+                yTileEnd = tileSize;
+            }
+
+            // Finally check if we collide with this tile. If so, we return where.
+            float hitX;
+            bool collides = KclTileHitsRight(GetTileType(x, y), xTileStart, xTileEnd, yTileStart, yTileEnd, tileSize, hitX);
+            if (collides)
+            {
+                outX = Tile2Pos(x, tileSize) + hitX - kclSize.x;
+                return true;
+            }
+
+        }
+
+    }
+
+    // No collision found, simply return.
+    outX = destX;
     return false;
 
 }

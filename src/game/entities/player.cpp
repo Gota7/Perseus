@@ -18,7 +18,7 @@ void PlayerInitStates(u32 behaviorId)
 
 void PlayerInit(Entity* ent)
 {
-    ent->kclBody.InitBounds({ 0, 0 }, { TILE_SIZE, TILE_SIZE * 2 });
+    ent->kclBody.InitBounds({ 0, 0 }, { TILE_SIZE * 0.8, TILE_SIZE * 2 * 0.8 });
 }
 
 void PlayerIdleInit(Entity* ent)
@@ -261,11 +261,18 @@ void PlayerFallMain(Entity* ent)
         ent->SetVelocityY(0);
         ent->ChangeState(PLAYER_ST_MOVE);
     }*/
+
     // Floor collision.
     if (ent->kclBody.hittingDown)
     {
         ent->SetVelocityY(0);
         ent->ChangeState(PLAYER_ST_MOVE);
+    }
+
+    // Ceiling collision.
+    else if (ent->kclBody.hittingUp)
+    {
+        ent->SetVelocityY(0);
     }
 
 }
