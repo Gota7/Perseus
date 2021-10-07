@@ -4,6 +4,24 @@
 #include "types.h"
 #include "../../types.h"
 
+// Collision path.
+struct CollisionPath
+{
+
+    // For direction moving.
+    s32 startTilePath;
+    s32 endTilePath;
+    float startTilePathRem;
+    float endTilePathRem;
+
+    // For "walls" around direction moving.
+    s32 startTileAround;
+    s32 endTileAround;
+    float startTileAroundRem;
+    float endTileAroundRem;
+
+};
+
 // KCL body.
 struct KclBody
 {
@@ -51,6 +69,7 @@ struct KclBody
 
     // Private physics functions.
 private:
+    
     bool CheckGround(float startY, float destY, float x, float tileSize, float& outY);
     bool CheckCeiling(float startY, float destY, float x, float tileSize, float& outY);
     bool CheckRight(float startX, float destX, float y, float tileSize, float& outX);
