@@ -1,31 +1,31 @@
 #include "camera.h"
 
-float GetCamPosX(Camera2D* cam)
+float ACam::GetX()
 {
-    return DESCALE(cam->offset.x);
+    return DESCALE(offset.x);
 }
 
-float GetCamPosY(Camera2D* cam)
+float ACam::GetY()
 {
-    return DESCALE(cam->offset.y);
+    return DESCALE(offset.y);
 }
 
-void SetCamPosX(Camera2D* cam, float newPos)
+void ACam::SetX(float newPos)
 {
-    cam->offset.x = SCALE(newPos);
+    offset.x = SCALE(newPos);
 }
 
-void SetCamPosY(Camera2D* cam, float newPos)
+void ACam::SetY(float newPos)
 {
-    cam->offset.y = SCALE(newPos);
+    offset.y = SCALE(newPos);
 }
 
-void MoveCamX(Camera2D* cam, float off)
+void ACam::MoveX(float off)
 {
-    cam->offset.x += SCALE(off);
+    offset.x += SCALE(off);
 }
 
-void MoveCamY(Camera2D* cam, float off)
+void ACam::MoveY(float off)
 {
-    cam->offset.y += SCALE(off);
+    offset.y += SCALE(off);
 }

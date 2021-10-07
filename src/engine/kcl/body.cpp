@@ -19,13 +19,13 @@ u32 KclBody::GetTileType(s32 x, s32 y)
     return kclTiles[y * kclWidth + x] & 0xFFFF;
 }
 
-void KclBody::InitBounds(Vector2 offset, Vector2 size)
+void KclBody::InitBounds(AVec2 offset, AVec2 size)
 {
     boundsOffset = offset;
     kclSize = size;
 }
 
-void KclBody::SetPosition(Vector2 pos)
+void KclBody::SetPosition(AVec2 pos)
 {
     position.x = pos.x;
     position.y = pos.y;

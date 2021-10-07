@@ -25,7 +25,7 @@ int main(void)
 
 		// Drawing.
 		BeginDrawing();
-		BeginMode2D(Scene::GetCamera());
+		BeginMode2D(*(Camera2D*)&Scene::GetCamera());
 		//Shaders::BeginMShader("Crt");
 		ClearBackground(BLACK);
 		Scene::DoDraw();	

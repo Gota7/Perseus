@@ -1,8 +1,8 @@
 #pragma once
 
-#include "raylib.h"
 #include "types.h"
 #include "../../types.h"
+#include "../vec.h"
 
 // Collision path.
 struct CollisionPath
@@ -27,18 +27,18 @@ struct KclBody
 {
 
     // Generic stuff.
-    Vector2 position = { 0, 0 };
-    Vector2 velocity = { 0, 0 };
-    Vector2 acceleration = { 0, 0 };
-    Vector2 force = { 0, 0 };
-    Vector2 maxVelocity = { 100, 100 };
+    AVec2 position = AVec2(0.0f);
+    AVec2 velocity = AVec2(0.0f);
+    AVec2 acceleration = AVec2(0.0f);
+    AVec2 force = AVec2(0.0f);
+    AVec2 maxVelocity = AVec2(100.0f);
     float mass = 1;
-    Vector2 prevPosition = { 0, 0 };
-    Vector2 prevVelocity = { 0, 0 };
+    AVec2 prevPosition = AVec2(0.0f);
+    AVec2 prevVelocity = AVec2(0.0f);
     
     // Bounding box.
-    Vector2 kclSize;
-    Vector2 boundsOffset = { 0, 0 };
+    AVec2 kclSize;
+    AVec2 boundsOffset = AVec2(0.0f);
 
     // Kcl map information.
     u32* kclTiles = nullptr;
@@ -63,8 +63,8 @@ struct KclBody
     bool isSolid = false;
 
     // Physics functions.
-    void InitBounds(Vector2 offset, Vector2 size);
-    void SetPosition(Vector2 pos);
+    void InitBounds(AVec2 offset, AVec2 size);
+    void SetPosition(AVec2 pos);
     void Update(float dt);
 
     // Private physics functions.

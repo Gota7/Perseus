@@ -1,5 +1,4 @@
-#ifndef TYPES_H
-#define TYPES_H
+#pragma once
 
 typedef char s8;
 typedef unsigned char u8;
@@ -24,5 +23,3 @@ struct u24
 {
     u32 val : 24;
 };
-
-#endif

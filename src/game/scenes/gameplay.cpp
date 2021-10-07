@@ -2,14 +2,14 @@
 
 void Gameplay::Initialize()
 {
-    camera.offset = { 0, 0 };
+    camera.offset = AVec2(0.0f);
     camera.rotation = 0;
-    camera.target = { 0, 0 };
+    camera.target = AVec2(0.0f);
     camera.zoom = Screen::scale;
 
     Tilemap::LoadTilemap(mapName);
     map = Tilemap::GetTilemap(mapName);
-    e.kclBody.position = { TILE_SIZE * 12, TILE_SIZE * 9 };
+    e.kclBody.position = AVec2(TILE_SIZE * 12.0f, TILE_SIZE * 9.0f);
     e.Spawn(NULL);
     e.LoadKcl(&map->layers[LAYER_KCL].tiles[0], map->width, map->height);
 }

@@ -18,7 +18,7 @@ void PlayerInitStates(u32 behaviorId)
 
 void PlayerInit(Entity* ent)
 {
-    ent->kclBody.InitBounds({ 0, 0 }, { TILE_SIZE * 0.8, TILE_SIZE * 2 * 0.8 });
+    ent->kclBody.InitBounds(AVec2(0.0f), AVec2(TILE_SIZE * 0.8f, TILE_SIZE * 2 * 0.8f));
 }
 
 void PlayerIdleInit(Entity* ent)
@@ -31,7 +31,7 @@ void PlayerIdleMain(Entity* ent)
 {
 
     // Jump.
-    if (Input::Pressed(BUTTON_JUMP))
+    if (AButtonPressed(BUTTON_JUMP))
     {
         ent->SetMaxVelocityY(abs(PLAYER_JUMP));
         ent->SetVelocityY(PLAYER_JUMP);
@@ -40,7 +40,7 @@ void PlayerIdleMain(Entity* ent)
     }
 
     // Move.
-    if (Input::Down(BUTTON_LEFT) || Input::Down(BUTTON_RIGHT))
+    if (AButtonDown(BUTTON_LEFT) || AButtonDown(BUTTON_RIGHT))
     {
         ent->ChangeState(PLAYER_ST_MOVE);
     }
@@ -63,7 +63,7 @@ void PlayerMoveMain(Entity* ent)
 {
 
     // Jump.
-    if (Input::Pressed(BUTTON_JUMP))
+    if (AButtonPressed(BUTTON_JUMP))
     {
         ent->SetMaxVelocityY(abs(PLAYER_JUMP));
         ent->SetVelocityY(PLAYER_JUMP);
@@ -80,9 +80,9 @@ void PlayerMoveMain(Entity* ent)
         
     // Get input.
     EMU input = 0;
-    if (Input::Down(BUTTON_LEFT))
+    if (AButtonDown(BUTTON_LEFT))
         input -= PLAYER_MOVE_ACCEL;
-    if (Input::Down(BUTTON_RIGHT))
+    if (AButtonDown(BUTTON_RIGHT))
         input += PLAYER_MOVE_ACCEL;
 
     // Use input.
@@ -185,7 +185,7 @@ void PlayerFallMain(Entity* ent)
 {
 
     // Gravity.
-    if (Input::Down(BUTTON_JUMP))
+    if (AButtonDown(BUTTON_JUMP))
     {
         ent->ApplyForceY(PLAYER_GRAVITY_JUMP);
     }
@@ -203,9 +203,9 @@ void PlayerFallMain(Entity* ent)
         
     // Get input.
     EMU input = 0;
-    if (Input::Down(BUTTON_LEFT))
+    if (AButtonDown(BUTTON_LEFT))
         input -= PLAYER_ACCEL_AIR;
-    if (Input::Down(BUTTON_RIGHT))
+    if (AButtonDown(BUTTON_RIGHT))
         input += PLAYER_ACCEL_AIR;
 
     // Use input.

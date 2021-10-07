@@ -1,26 +1,24 @@
 #pragma once
 
-#include <raylib.h>
-#include "screen.h"
+#include "backend.h"
+
+// Camera definition.
+struct ACam
+{
+    AVec2 offset;
+    AVec2 target;
+    float rotation;
+    float zoom;
+
+    float GetX();
+    float GetY();
+    void SetX(float v);
+    void SetY(float v);
+    void MoveX(float v);
+    void MoveY(float v);
+};
 
 // Scale item.
+#include "screen.h"
 #define SCALE(x) x * Screen::scale
 #define DESCALE(x) x / Screen::scale
-
-// Camera position X.
-float GetCamPosX(Camera2D* cam);
-
-// Camera position Y.
-float GetCamPosY(Camera2D* cam);
-
-// Set the camera position X.
-void SetCamPosX(Camera2D* cam, float newPos);
-
-// Set the camera position Y.
-void SetCamPosY(Camera2D* cam, float newPos);
-
-// Move the camera position X.
-void MoveCamX(Camera2D* cam, float off);
-
-// Move the camera position Y.
-void MoveCamY(Camera2D* cam, float off);

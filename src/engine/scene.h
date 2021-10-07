@@ -1,6 +1,7 @@
 #pragma once
 
-#include "raylib.h"
+#include "backend.h"
+#include "camera.h"
 #include <map>
 #include <string>
 
@@ -16,8 +17,8 @@ private:
 
 	// Public members.
 public:
-	static Vector2 BGPos;
-	Camera2D camera;
+	static AVec2 BGPos;
+	ACam camera;
     
     // Initialize scene.
     virtual void Initialize() {}
@@ -37,6 +38,6 @@ public:
 	static void DoUpdate();
 	static void LoadScene(const std::string& name, Scene *scene);
 	static Scene* CurrentScene();
-	static Camera2D &GetCamera();
+	static ACam &GetCamera();
 
 };

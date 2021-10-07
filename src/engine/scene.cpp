@@ -6,7 +6,7 @@ Scene *Scene::currentScene = nullptr;
 map<string, Scene *> Scene::loadedScenes;
 
 // BG Position.
-Vector2 Scene::BGPos = {0, 0};
+AVec2 Scene::BGPos = AVec2(0.0f);
 
 void Scene::ChangeScene(const string& name)
 {
@@ -44,7 +44,7 @@ Scene* Scene::CurrentScene()
     return currentScene;
 }
 
-Camera2D &Scene::GetCamera()
+ACam &Scene::GetCamera()
 {
     return currentScene->camera;
 }

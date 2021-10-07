@@ -1,6 +1,5 @@
 #pragma once
 
-#include "types.h"
 #include "gtypes.h"
 
 #include <stdio.h>
