@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../types.h"
 #include "screenData.h"
+#include "types.h"
 
 // Vector for math and positioning.
 struct AVec2
@@ -18,6 +18,7 @@ struct AVec2
     AVec2(EMU v, s32 degree = 0);
     AVec2(EMU x, EMU y, s32 degree = 0);
     AVec2(AVec2& v);
+    AVec2(const AVec2& v);
 
     // Operator overloading.
     AVec2& operator =(const AVec2& v)
@@ -49,3 +50,6 @@ struct AVec2
     inline AVec2 Normal();
 
 };
+
+// Constant vectors.
+const AVec2 ZERO_VEC = AVec2(0.0f, 0.0f);

@@ -68,7 +68,7 @@ void Tilemap::FromXML(const string& name)
         if (string(child->Name()) == "tileset")
         {
             TilesetEntry t;
-            t.name = GetFileNameWithoutExt(child->Attribute("source"));
+            t.name = AGetFileNameWithoutExtension(child->Attribute("source"));
             t.startingTileId = (u32)child->IntAttribute("firstgid");
             Tileset::LoadTileset(t.name);
             t.tileset = Tileset::GetTileset(t.name);

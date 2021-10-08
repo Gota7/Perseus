@@ -1,7 +1,7 @@
 #pragma once
 #include <imgui.h>
 #include <string>
-#include "../types.h"
+#include "../engine/types.h"
 using namespace std;
 
 // Edit a number with arrows on the side.

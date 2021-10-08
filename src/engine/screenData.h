@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../types.h"
+#include "types.h"
 
 const u8 TILE_SIZE = 16;
 const u8 SCREEN_WIDTH_TILES = 27;

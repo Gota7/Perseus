@@ -3,6 +3,7 @@
 #include "color.h"
 #include "input.h"
 #include "vec.h"
+#include "medusa/texture.h"
 #include <string>
 
 /*
@@ -50,5 +51,32 @@ bool AButtonPressed(AInputButton button);
 // Check if a button was released just this frame.
 bool AButtonReleased(AInputButton button);
 
-// Drawing functions.
-void ADrawRectangle(float x, float y, float width, float height, AColor color);
+
+
+/*
+    Graphics functions.
+*/
+
+// Draw a rectangle.
+void ADrawRectangle(float x, float y, float width, float height, AColor color = COL_WHITE);
+
+// Draw a texture.
+void ADrawTexture(ATex tex, float srcX, float srcY, float srcWidth, float srcHeight, float destX, float destY, float destWidth, float destHeight, AVec2 origin = ZERO_VEC, float rotation = 0, AColor tint = COL_WHITE);
+
+// Load a texture.
+ATex ALoadTexture(std::string path);
+
+// Unload a texture.
+void AUnloadTexture(ATex tex);
+
+
+
+/*
+    Misc. functions.
+*/
+
+// Get the current working directory.
+std::string AGetWorkingDirectory();
+
+// Get a filename without an extension.
+std::string AGetFileNameWithoutExtension(std::string name);

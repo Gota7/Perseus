@@ -1,7 +1,6 @@
 #pragma once
 
 #include "../../engine.h"
-#include "../../types.h"
 
 // Main game play.
 struct Gameplay : public Scene

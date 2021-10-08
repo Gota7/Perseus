@@ -36,6 +36,12 @@ AVec2::AVec2(AVec2& v)
     y = v.y;
 }
 
+AVec2::AVec2(const AVec2& v)
+{
+    x = v.x;
+    y = v.y;
+}
+
 /*AVec2& AVec2::operator=(AVec2 v)
 {
   this->x = v.x;

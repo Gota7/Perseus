@@ -1,6 +1,7 @@
 #pragma once
 
 #include "asset.h"
+#include "texture.h"
 #include <map>
 #include <memory>
 #include <vector>
@@ -66,7 +67,7 @@ public:
     u32 numTiles;
     u32 tilesPerRow;
     std::string imagePath;
-    Texture2D tex;
+    ATex tex;
 
     // Implement.
     std::string AssetFolderName();

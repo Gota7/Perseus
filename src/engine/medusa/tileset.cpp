@@ -1,5 +1,7 @@
 #include "tileset.h"
 #include "../screenData.h"
+#include <bit>
+#include <cstdint>
 
 using namespace std;
 using namespace tinyxml2;
@@ -58,7 +60,7 @@ void Tileset::FromXML(const string& name)
     tilesPerRow = (u32)root->IntAttribute("columns");
     root = root->FirstChildElement();
     imagePath = root->Attribute("source");
-    tex = LoadTexture((Asset::assetFolder + AssetFolderName() + "/" + imagePath).c_str());
+    tex = ALoadTexture(Asset::assetFolder + AssetFolderName() + "/" + imagePath);
 }
 
 void Tileset::FromBIN(const std::string& name)
@@ -73,7 +75,7 @@ void Tileset::FromBIN(const std::string& name)
     numTiles = f.ReadU32();
     tilesPerRow = f.ReadU32();
     imagePath = f.ReadStr();
-    tex = LoadTexture((Asset::assetFolder + AssetFolderName() + "/" + imagePath).c_str());
+    tex = ALoadTexture(Asset::assetFolder + AssetFolderName() + "/" + imagePath);
 }
 
 void Tileset::WriteXML(const std::string& destPath)
@@ -95,10 +97,10 @@ void Tileset::WriteBIN(const std::string& destPath)
 void Tileset::Unload()
 {
     imagePath = "";
-    UnloadTexture(tex);
+    AUnloadTexture(tex);
 }
 
 void Tileset::DrawTile(u32 tileId, int tileX, int tileY, float offX, float offY)
 {
-    DrawTexturePro(tex, { (float)(tileId % tilesPerRow * TILE_SIZE), (float)(tileId / tilesPerRow * TILE_SIZE), TILE_SIZE, TILE_SIZE }, { offX + tileX * TILE_SIZE, offY + tileY * TILE_SIZE, TILE_SIZE, TILE_SIZE }, { 0, 0 }, 0, WHITE);
+    ADrawTexture(tex, (float)(tileId % tilesPerRow * TILE_SIZE), (float)(tileId / tilesPerRow * TILE_SIZE), TILE_SIZE, TILE_SIZE, offX + tileX * TILE_SIZE, offY + tileY * TILE_SIZE, TILE_SIZE, TILE_SIZE);
 }

@@ -59,3 +59,47 @@ bool AButtonReleased(AInputButton button)
 {
     return IsKeyReleased(keysMap[button]);
 }
+
+void ADrawTexture(ATex tex, float srcX, float srcY, float srcWidth, float srcHeight, float destX, float destY, float destWidth, float destHeight, AVec2 origin, float rotation, AColor tint)
+{
+    Texture2D ret;
+    ret.id = tex.id;
+    ret.format = tex.format;
+    ret.width = tex.width;
+    ret.height = tex.height;
+    ret.mipmaps = tex.mipmaps;
+    DrawTexturePro(ret, { srcX, srcY, srcWidth, srcHeight }, { destX, destY, destWidth, destHeight }, { origin.x, origin.y }, rotation, { tint.r, tint.g, tint.b, tint.a });
+}
+
+ATex ALoadTexture(std::string path)
+{
+    Texture2D tex = LoadTexture(path.c_str());
+    ATex ret;
+    ret.id = tex.id;
+    ret.format = tex.format;
+    ret.width = tex.width;
+    ret.height = tex.height;
+    ret.mipmaps = tex.mipmaps;
+    return ret;
+}
+
+void AUnloadTexture(ATex tex)
+{
+    Texture2D ret;
+    ret.id = tex.id;
+    ret.format = tex.format;
+    ret.width = tex.width;
+    ret.height = tex.height;
+    ret.mipmaps = tex.mipmaps;
+    UnloadTexture(ret);
+}
+
+std::string AGetWorkingDirectory()
+{
+    return std::string(GetWorkingDirectory());
+}
+
+std::string AGetFileNameWithoutExtension(std::string name)
+{
+    return std::string(GetFileNameWithoutExt(name.c_str()));
+}

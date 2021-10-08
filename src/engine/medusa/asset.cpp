@@ -2,15 +2,15 @@
 
 using namespace std;
 
-string Asset::assetFolder = string(GetWorkingDirectory()) + "/Res/";;
+string Asset::assetFolder = AGetWorkingDirectory() + "/Res/";;
 
 void Asset::Load(Asset* asset, string assetName, bool preferBinary)
 {
     
     // Get existence.
     string pathWithoutExtension = asset->AssetFolderName() + "/" + assetName;
-    bool binExists = FileExists((assetFolder + pathWithoutExtension + "." + asset->GetBINExtension()).c_str());
-    bool xmlExists = FileExists((assetFolder + pathWithoutExtension + "." + asset->GetXMLExtension()).c_str());
+    bool binExists = GFile::FileExists((assetFolder + pathWithoutExtension + "." + asset->GetBINExtension()).c_str());
+    bool xmlExists = GFile::FileExists((assetFolder + pathWithoutExtension + "." + asset->GetXMLExtension()).c_str());
 
     // Binary.
     if (binExists && (preferBinary || !xmlExists))
