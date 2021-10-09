@@ -190,7 +190,7 @@ void Entity::UpdatePhysics()
 {
 
     // Update body.
-    float dt = GetFrameTime();
+    float dt = AGetFrameTime();
     kclBody.Update(dt);
 
 }
@@ -215,11 +215,11 @@ void Entity::Draw()
     // Draw KCL.
     if (DEBUG_KCL)
     {
-        DrawRectangleRec(
-            { kclBody.position.x + kclBody.boundsOffset.x,
+        ADrawRectangle(
+            kclBody.position.x + kclBody.boundsOffset.x,
             kclBody.position.y + kclBody.boundsOffset.y,
-            kclBody.kclSize.x, kclBody.kclSize.y },
-            ColorAlpha(YELLOW, 0.7f));
+            kclBody.kclSize.x, kclBody.kclSize.y,
+            AColor::ChangeAlpha(COL_YELLOW, (u8)(0.7f * 255)));
     }
 
 }

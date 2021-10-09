@@ -18,6 +18,11 @@ void ASetFPS(s32 FPS)
     SetTargetFPS(FPS);
 }
 
+float AGetFrameTime()
+{
+    return GetFrameTime();
+}
+
 s32 AGetMonitorWidth(s32 monitor)
 {
     return GetMonitorWidth(monitor);
@@ -60,6 +65,16 @@ bool AButtonReleased(AInputButton button)
     return IsKeyReleased(keysMap[button]);
 }
 
+void ADrawRectangle(float x, float y, float width, float height, AColor color)
+{
+    Color c;
+    c.r = color.r;
+    c.g = color.g;
+    c.b = color.b;
+    c.a = color.a;
+    DrawRectangleRec({ x, y, width, height }, c);
+}
+
 void ADrawTexture(ATex tex, float srcX, float srcY, float srcWidth, float srcHeight, float destX, float destY, float destWidth, float destHeight, AVec2 origin, float rotation, AColor tint)
 {
     Texture2D ret;
@@ -92,6 +107,36 @@ void AUnloadTexture(ATex tex)
     ret.height = tex.height;
     ret.mipmaps = tex.mipmaps;
     UnloadTexture(ret);
+}
+
+AShader ALoadShader(std::string vertexFileName, std::string faceFileName)
+{
+    Shader shader = LoadShader((vertexFileName.compare("") != 0) ? vertexFileName.c_str() : NULL, (faceFileName.compare("") != 0) ? faceFileName.c_str() : NULL);
+    AShader ret;
+    ret.id = shader.id;
+    ret.locs = shader.locs;
+    return ret;
+}
+
+void AUnloadShader(AShader shader)
+{
+    Shader s;
+    s.id = shader.id;
+    s.locs = shader.locs;
+    UnloadShader(s);
+}
+
+void ABeginShaderMode(AShader shader)
+{
+    Shader s;
+    s.id = shader.id;
+    s.locs = shader.locs;
+    BeginShaderMode(s);
+}
+
+void AEndShaderMode()
+{
+    EndShaderMode();
 }
 
 std::string AGetWorkingDirectory()

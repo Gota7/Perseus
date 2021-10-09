@@ -28,6 +28,9 @@ void ASetWindowSize(s32 width, s32 height);
 // Set how many frames per second the game is.
 void ASetFPS(s32 FPS);
 
+// Get the time of the last frame.
+float AGetFrameTime();
+
 // Get the monitor width given the monitor ID.
 s32 AGetMonitorWidth(s32 monitor);
 

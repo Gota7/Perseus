@@ -21,7 +21,20 @@ struct AColor
         this->a = a;
     }
 
+    // Alpha.
+    static AColor ChangeAlpha(const AColor& color, u8 alpha)
+    {
+        return AColor(color.r, color.g, color.b, alpha);
+    }
+
+    // Alpha.
+    static AColor ChangeAlpha(AColor& color, u8 alpha)
+    {
+        return AColor(color.r, color.g, color.b, alpha);
+    }
+
 };
 
-// White.
+// Colors.
 const AColor COL_WHITE = AColor(255, 255, 255);
+const AColor COL_YELLOW = AColor(253, 249, 0, 255);

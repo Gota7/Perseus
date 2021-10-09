@@ -2,6 +2,8 @@
 
 #include "asset.h"
 #include <map>
+#include <string>
+#include <vector>
 
 // Behaviors.
 enum Behaviors : u32
