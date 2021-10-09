@@ -1,6 +1,5 @@
 #pragma once
 
-#include "raylib.h"
 #include "asset.h"
 #include <map>
 

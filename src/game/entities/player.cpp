@@ -173,6 +173,12 @@ void PlayerMoveMain(Entity* ent)
         ent->ChangeState(PLAYER_ST_FALL);
     }
 
+    // Wall collision.
+    if (ent->kclBody.hittingLeft || ent->kclBody.hittingRight)
+    {
+        ent->SetVelocityX(0);
+    }
+
 }
 
 void PlayerFallInit(Entity* ent)
@@ -261,6 +267,12 @@ void PlayerFallMain(Entity* ent)
         ent->SetVelocityY(0);
         ent->ChangeState(PLAYER_ST_MOVE);
     }*/
+
+    // Wall collision.
+    if (ent->kclBody.hittingLeft || ent->kclBody.hittingRight)
+    {
+        ent->SetVelocityX(0);
+    }
 
     // Floor collision.
     if (ent->kclBody.hittingDown)

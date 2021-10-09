@@ -2,7 +2,7 @@
 
 using namespace std;
 
-map<string, Shader> Shaders::loadedShaders;
+map<string, AShader> Shaders::loadedShaders;
 
 // Load shader.
 void Shaders::LoadMShader(const string& shaderName, bool useVertexShader, bool useFragmentShader)
@@ -17,24 +17,24 @@ void Shaders::LoadMShader(const string& shaderName, bool useVertexShader, bool u
     {
         fragmentPath = Asset::assetFolder + "Shd/" + shaderName + ".mshf";
     }
-    loadedShaders[shaderName] = LoadShader(useVertexShader ? vertexPath.c_str() : NULL, useFragmentShader ? fragmentPath.c_str() : NULL);
+    loadedShaders[shaderName] = ALoadShader(useVertexShader ? vertexPath : "", useFragmentShader ? fragmentPath : "");
 }
 
 // Begin using shader.
 void Shaders::BeginMShader(const string& shaderName)
 {
-    BeginShaderMode(loadedShaders[shaderName]);
+    ABeginShaderMode(loadedShaders[shaderName]);
 }
 
 // Stop using shader.
 void Shaders::StopMShader()
 {
-    EndShaderMode();
+    AEndShaderMode();
 }
 
 // Unload shader.
 void Shaders::UnloadMShader(const string& shaderName)
 {
-    UnloadShader(loadedShaders[shaderName]);
+    AUnloadShader(loadedShaders[shaderName]);
     loadedShaders.erase(shaderName);
 }

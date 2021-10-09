@@ -2,6 +2,7 @@
 
 #include "color.h"
 #include "input.h"
+#include "shaders.h"
 #include "vec.h"
 #include "medusa/texture.h"
 #include <string>
@@ -68,6 +69,18 @@ ATex ALoadTexture(std::string path);
 
 // Unload a texture.
 void AUnloadTexture(ATex tex);
+
+// Load a shader.
+AShader ALoadShader(std::string vertexFileName, std::string faceFileName);
+
+// Unload a shader.
+void AUnloadShader(AShader shader);
+
+// Begin shader mode.
+void ABeginShaderMode(AShader shader);
+
+// End shader mode.
+void AEndShaderMode();
 
 
 
