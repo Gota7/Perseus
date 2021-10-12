@@ -284,3 +284,63 @@ bool KclTileHitsLeft(u32 type, float startX, float endX, float startY, float end
     return true;
 
 }
+
+/*
+enum KclTypes
+{
+    KCL_NONE,
+    KCL_AIR,
+    KCL_SOLID,
+    KCL_SOLID_ON_TOP,
+    KCL_SOLID_ON_BOTTOM,
+    KCL_SOLID_SLAB_TOP,
+    KCL_SOLID_SLAB_BOTTOM,
+    KCL_SOLID_SLAB_LEFT,
+    KCL_SOLID_SLAB_RIGHT,
+    KCL_LADDER,
+    KCL_LADDER_LEFT,
+    KCL_LADDER_RIGHT,
+    KCL_SOLID_ON_RIGHT,
+    KCL_SPIKES_TOP_BOTTOM,
+    KCL_SPIKES_LEFT_RIGHT,
+    KCL_SPIKES,
+    KCL_SOLID_ON_LEFT,
+    KCL_SLOPE_TOP_RIGHT_SPACE,
+    KCL_SLOPE_TOP_LEFT_SPACE,
+    KCL_SLOPE_BOTTOM_RIGHT_SPACE,
+    KCL_SLOPE_BOTTOM_LEFT_SPACE,
+    KCL_SPIKES_TOP,
+    KCL_SPIKES_BOTTOM,
+    KCL_SPIKES_LEFT,
+    KCL_SPIKES_RIGHT
+};*/
+
+bool KclTileCollides(u32 type, float startX, float endX, float startY, float endY, bool dirFlip)
+{
+
+    // Obviously no collision for air.
+    if (type == KCL_NONE || type == KCL_AIR) return false;
+
+    // Some general solids.
+    if (type == KCL_SOLID || type == KCL_LADDER || type == KCL_LADDER_LEFT || type == KCL_LADDER_RIGHT
+        || type == KCL_SPIKES_TOP_BOTTOM || type == KCL_SPIKES_LEFT_RIGHT || type == KCL_SPIKES
+        || type == KCL_SPIKES_TOP || type == KCL_SPIKES_BOTTOM || type == KCL_SPIKES_LEFT || type == KCL_SPIKES_RIGHT)
+        return true;
+
+    // So for solid in direction Z, it's important we start at the place we are counting.
+    // Intersection is still counted even if we don't do anything in the resolution code.
+    if (type == KCL_SOLID_ON_TOP && startY == 0 && !dirFlip) return true;
+    if (type == KCL_SOLID_ON_BOTTOM && startY == 1 && dirFlip) return true;
+    if (type == KCL_SOLID_ON_LEFT && startX == 0 && !dirFlip) return true;
+    if (type == KCL_SOLID_ON_RIGHT && startX == 1 && dirFlip) return true;
+
+    // Solid slabs, only valid for certain halves.
+    if (type == KCL_SOLID_SLAB_TOP && ((!dirFlip && startY < 0.5) || (dirFlip && endY < 0.5))) return true;
+    if (type == KCL_SOLID_SLAB_BOTTOM && ((!dirFlip && endY >= 0.5) || (dirFlip && startY >= 0.5))) return true;
+    if (type == KCL_SOLID_SLAB_LEFT && ((!dirFlip && startX < 0.5) || (dirFlip && endX < 0.5))) return true;
+    if (type == KCL_SOLID_SLAB_RIGHT && ((!dirFlip && endX >= 0.5) || (dirFlip && startX >= 0.5))) return true;
+
+    // Rest are not solid.
+    return false;
+
+}

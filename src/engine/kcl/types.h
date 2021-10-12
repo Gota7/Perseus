@@ -36,3 +36,6 @@ bool KclTileHitsDownward(u32 type, float startY, float endY, float startX, float
 bool KclTileHitsUpward(u32 type, float startY, float endY, float startX, float endX, float tileSize, float& hitY);
 bool KclTileHitsRight(u32 type, float startX, float endX, float startY, float endY, float tileSize, float& hitX);
 bool KclTileHitsLeft(u32 type, float startX, float endX, float startY, float endY, float tileSize, float& hitX);
+
+// If a tile collides. Given the tile type. X and Ys are given on a scale from 0-1 from top/left of tile to bottom/right of tile.
+bool KclTileCollides(u32 type, float startX, float endX, float startY, float endY, bool dirFlip);

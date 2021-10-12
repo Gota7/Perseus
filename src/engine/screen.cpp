@@ -6,10 +6,10 @@ int Screen::height = (int)(SCREEN_HEIGHT * DEFAULT_SCREEN_SCALE);
 float Screen::scale = DEFAULT_SCREEN_SCALE;
 bool Screen::fullscreen = false;
 
-void Screen::Init()
+void Screen::Init(std::string title)
 {
     // TODO: SETTINGS!!!
-    AInitWindow(width, height, "Perseus: Wrath Of The Gorgons");
+    AInitWindow(width, height, title);
 	ASetFPS(FPS);
 }
 

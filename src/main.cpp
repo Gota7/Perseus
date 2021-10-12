@@ -9,8 +9,7 @@ int main(void)
 {
 
 	// Window stuff.
-	Screen::Init();
-	int width = 1024;
+	Screen::Init("Perseus: Wrath Of The Gorgons");
 
 	// Scene setup.
 	Entity::CreateStates();

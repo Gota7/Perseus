@@ -2,6 +2,20 @@
 #include <stdio.h>
 #include <tgmath.h>
 
+/*
+
+So I have a new proposed method of collision that I will implement:
+
+1. If either Vx or Vy is greater than or equal to TILE_SIZE, split the number of steps for the frame.
+2. Get the tiles that currently intersect with a given tile.
+3. A tile intersects only under certain conditions (tile specific).
+4. Respond accordingly (if intersecting more on the X tile (intersecting rect is taller rather than wide), resolve X first, else resolve Y first).
+5. Which direction to resolve depends on the body's velocity.
+6. A resolution is put in place by the tile specific behavior.
+7. Body velocity components are set to 0 where necessary.
+
+*/
+
 s32 KclBody::Pos2Tile(float pos, float tileSize)
 {
     return (s32)(pos / tileSize);

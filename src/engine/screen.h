@@ -3,6 +3,7 @@
 #include "backend.h"
 #include "screenData.h"
 #include "scene.h"
+#include <string>
 
 // Screen struct.
 struct Screen
@@ -15,7 +16,7 @@ struct Screen
     static bool fullscreen;
 
     // Initialize screen.
-    static void Init();
+    static void Init(std::string title);
 
     // Set size with width.
     static void SetSizeW(int w);
