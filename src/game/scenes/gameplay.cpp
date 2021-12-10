@@ -9,7 +9,7 @@ void Gameplay::Initialize()
 
     Tilemap::LoadTilemap(mapName);
     map = Tilemap::GetTilemap(mapName);
-    e.kclBody.position = AVec2(TILE_SIZE * 12.0f, TILE_SIZE * 9.0f);
+    e.kclBody.position = AVec2(TILE_SIZE * 12.0f, TILE_SIZE * 10.0f);
     e.Spawn(NULL);
     e.LoadKcl(&map->layers[LAYER_KCL].tiles[0], map->width, map->height);
 }

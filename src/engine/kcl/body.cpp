@@ -82,6 +82,248 @@ void KclBody::Update(float dt)
         velocity.y = -maxVelocity.y;
     }
 
+    // Collision.
+    if (isCollideable) {
+        ApplyXInertia(velocity.x * dt);
+        ApplyYInertia(velocity.y * dt);
+    } else {
+        position.x += velocity.x * dt;
+        position.y += velocity.y * dt;
+    }
+
+}
+
+// Move the KCL body in the X direction.
+void KclBody::ApplyXInertia(float inertia)
+{
+
+    // No movement.
+    if (inertia == 0) return;
+
+    // Move left.
+    if (inertia < 0)
+    {
+        hittingRight = false;
+        while (inertia < 0)
+        {
+            // Check one pixel at a time.
+            float toMove = 1;
+            if (inertia > -1)
+            {
+                toMove = -inertia;
+            }
+
+            // Get tiles to check.
+            float offX, offY, offX2, offY2, offX3, offY3;
+            int tileX = Pos2Tile(position.x - toMove, TILE_SIZE);
+            int tileY = Pos2Tile(position.y, TILE_SIZE);
+            int tileY2 = Pos2Tile(position.y + kclSize.y, TILE_SIZE);
+            int tileY3 = Pos2Tile(position.y + kclSize.y / 2, TILE_SIZE);
+            
+            // Check for collisions for the top, middle, & bottom of the player.
+            CalcOffsForMovingLeft(GetTileType(tileX, tileY), position.x - toMove - TILE_SIZE * tileX, position.y, TILE_SIZE, offX, offY);
+            CalcOffsForMovingLeft(GetTileType(tileX, tileY2), position.x, position.y + (kclSize.y/2), TILE_SIZE, offX2, offY2);
+            CalcOffsForMovingLeft(GetTileType(tileX, tileY3), position.x - toMove, position.y + kclSize.y, TILE_SIZE, offX3, offY3);
+            offX = fmin(offX, offX2);
+            offY = fmin(offY, offY2);
+            offX = fmin(offX, offX3);
+            offY = fmin(offY, offY3);
+            offX = fmin(offX, toMove);
+            if (offX == 0)
+            {
+                hittingLeft = true;
+                return;
+            }
+            position.x -= offX;
+            position.y -= offY;
+
+            // We moved the amount.
+            inertia += toMove;
+
+        }
+        hittingLeft = false;
+    }
+
+    // Move right.
+    if (inertia > 0)
+    {
+        hittingLeft = false;
+        while (inertia > 0)
+        {
+            // Check one pixel at a time.
+            float toMove = 1;
+            if (inertia < 1)
+            {
+                toMove = inertia;
+            }
+
+            // Get tiles to check.
+            float offX, offY, offX2, offY2, offX3, offY3;
+            int tileX = Pos2Tile(position.x + kclSize.x + toMove, TILE_SIZE);
+            int tileY = Pos2Tile(position.y, TILE_SIZE);
+            int tileY2 = Pos2Tile(position.y + kclSize.y, TILE_SIZE);
+            int tileY3 = Pos2Tile(position.y + kclSize.y / 2, TILE_SIZE);
+            
+            // Check for collisions for the top, middle, & bottom of the player.
+            CalcOffsForMovingLeft(GetTileType(tileX, tileY), position.x - toMove - TILE_SIZE * tileX, position.y, TILE_SIZE, offX, offY);
+            CalcOffsForMovingLeft(GetTileType(tileX, tileY2), position.x, position.y + (kclSize.y/2), TILE_SIZE, offX2, offY2);
+            CalcOffsForMovingLeft(GetTileType(tileX, tileY3), position.x - toMove, position.y + kclSize.y, TILE_SIZE, offX3, offY3);
+            offX = fmin(offX, offX2);
+            offY = fmin(offY, offY2);
+            offX = fmin(offX, offX3);
+            offY = fmin(offY, offY3);
+            offX = fmin(offX, toMove);
+            if (offX == 0)
+            {
+                hittingRight = true;
+                return;
+            }
+            position.x += offX;
+            position.y += offY;
+
+            // We moved the amount.
+            inertia -= toMove;
+
+        }
+        hittingRight = false;
+    }
+
+}
+
+// Move the KCL body in the Y direction.
+void KclBody::ApplyYInertia(float inertia) {
+
+    // No movement.
+    if (inertia == 0) return;
+
+    // Move up.
+    if (inertia < 0)
+    {
+        hittingDown = false;
+        while (inertia < 0)
+        {
+            // Check one pixel at a time.
+            float toMove = 1;
+            if (inertia > -1)
+            {
+                toMove = -inertia;
+            }
+
+            // Get tiles to check.
+            float offX, offY, offX2, offY2, offX3, offY3;
+            int tileY = Pos2Tile(position.y - toMove, TILE_SIZE);
+            int tileX = Pos2Tile(position.x, TILE_SIZE);
+            int tileX2 = Pos2Tile(position.x + kclSize.x, TILE_SIZE);
+            int tileX3 = Pos2Tile(position.x + kclSize.x / 2, TILE_SIZE);
+            
+            // Check for collisions for the top, middle, & bottom of the player.
+            CalcOffsForMovingUp(GetTileType(tileX, tileY), position.x - toMove - TILE_SIZE * tileX, position.y, TILE_SIZE, offX, offY);
+            CalcOffsForMovingUp(GetTileType(tileX2, tileY), position.x, position.y + (kclSize.y/2), TILE_SIZE, offX2, offY2);
+            CalcOffsForMovingUp(GetTileType(tileX3, tileY), position.x - toMove, position.y + kclSize.y, TILE_SIZE, offX3, offY3);
+            offX = fmin(offX, offX2);
+            offY = fmin(offY, offY2);
+            offX = fmin(offX, offX3);
+            offY = fmin(offY, offY3);
+            offY = fmin(offY, toMove);
+            if (offY == 0)
+            {
+                hittingUp = true;
+                return;
+            }
+            position.x -= offX;
+            position.y -= offY;
+
+            // We moved the amount.
+            inertia += toMove;
+
+        }
+        hittingUp = false;
+    }
+
+    // Move down.
+    if (inertia > 0)
+    {
+        hittingUp = false;
+        while (inertia > 0)
+        {
+            // Check one pixel at a time.
+            float toMove = 1;
+            if (inertia < 1)
+            {
+                toMove = inertia;
+            }
+
+            // Get tiles to check.
+            float offX, offY, offX2, offY2, offX3, offY3;
+            int tileY = Pos2Tile(position.y + kclSize.y + toMove, TILE_SIZE);
+            int tileX = Pos2Tile(position.x, TILE_SIZE);
+            int tileX2 = Pos2Tile(position.x + kclSize.x, TILE_SIZE);
+            int tileX3 = Pos2Tile(position.x + kclSize.x / 2, TILE_SIZE);
+            
+            // Check for collisions for the top, middle, & bottom of the player.
+            CalcOffsForMovingUp(GetTileType(tileX, tileY), position.x - toMove - TILE_SIZE * tileX, position.y, TILE_SIZE, offX, offY);
+            CalcOffsForMovingUp(GetTileType(tileX2, tileY), position.x, position.y + (kclSize.y/2), TILE_SIZE, offX2, offY2);
+            CalcOffsForMovingUp(GetTileType(tileX3, tileY), position.x - toMove, position.y + kclSize.y, TILE_SIZE, offX3, offY3);
+            offX = fmin(offX, offX2);
+            offY = fmin(offY, offY2);
+            offX = fmin(offX, offX3);
+            offY = fmin(offY, offY3);
+            offY = fmin(offY, toMove);
+            if (offY == 0)
+            {
+                hittingDown = true;
+                return;
+            }
+            position.x += offX;
+            position.y += offY;
+
+            // We moved the amount.
+            inertia -= toMove;
+
+        }
+    }
+
+}
+
+/*
+
+void KclBody::Update(float dt)
+{
+
+    // Backup previous state information.
+    prevPosition = position;
+    prevVelocity = velocity;
+    wasHittingLeft = hittingLeft;
+    wasHittingRight = hittingRight;
+    wasHittingUp = hittingUp;
+    wasHittingDown = hittingDown;
+
+    // Set new acceleration and velocity, reset our force queue.
+    acceleration.x = force.x / mass;
+    acceleration.y = force.y / mass;
+    force.x = 0;
+    force.y = 0;
+    velocity.x += acceleration.x * dt;
+    velocity.y += acceleration.y * dt;
+
+    // Max sure we cap velocity.
+    if (velocity.x >= maxVelocity.x)
+    {
+        velocity.x = maxVelocity.x;
+    }
+    if (velocity.x <= -maxVelocity.x)
+    {
+        velocity.x = -maxVelocity.x;
+    }
+    if (velocity.y >= maxVelocity.y)
+    {
+        velocity.y = maxVelocity.y;
+    }
+    if (velocity.y <= -maxVelocity.y)
+    {
+        velocity.y = -maxVelocity.y;
+    }
+
     // Increment position, and calculate new and past coordinates for collision box.
     float currY = roundf(position.y + boundsOffset.y);
     position.x += velocity.x * dt;   
@@ -523,3 +765,5 @@ bool KclBody::CheckLeft(float startX, float destX, float y, float tileSize, floa
     return false;
 
 }
+
+*/

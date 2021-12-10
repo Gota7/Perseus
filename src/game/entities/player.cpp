@@ -19,6 +19,7 @@ void PlayerInitStates(u32 behaviorId)
 void PlayerInit(Entity* ent)
 {
     ent->kclBody.InitBounds(AVec2(0.0f), AVec2(TILE_SIZE * 0.8f, TILE_SIZE * 2 * 0.8f));
+    ent->kclBody.isCollideable = true;
 }
 
 void PlayerIdleInit(Entity* ent)

@@ -315,6 +315,34 @@ enum KclTypes
     KCL_SPIKES_RIGHT
 };*/
 
+void CalcOffsForMovingLeft(u32 type, float x, float y, float tileSize, float& offX, float& offY)
+{
+    if (type == KCL_SOLID)
+    {
+        offX = 0;
+        offY = 0;
+    }
+    else 
+    {
+        offX = 1;
+        offY = 0;
+    }
+}
+
+void CalcOffsForMovingUp(u32 type, float x, float y, float tileSize, float& offX, float& offY)
+{
+    if (type == KCL_SOLID)
+    {
+        offX = 0;
+        offY = 0;
+    }
+    else 
+    {
+        offX = 0;
+        offY = 1;
+    }
+}
+
 bool KclTileCollides(u32 type, float startX, float endX, float startY, float endY, bool dirFlip)
 {
 

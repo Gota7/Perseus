@@ -31,6 +31,10 @@ enum KclTypes
     KCL_SPIKES_RIGHT
 };
 
+// Check can move, and if so how much in the X and Y direction.
+void CalcOffsForMovingLeft(u32 type, float x, float y, float tileSize, float& offX, float& offY);
+void CalcOffsForMovingUp(u32 type, float x, float y, float tileSize, float& offX, float& offY);
+
 // Check if intersecting downwards with a tile. All positions are relative to the tile. Returns if it, and where along the Y axis.
 bool KclTileHitsDownward(u32 type, float startY, float endY, float startX, float endX, float tileSize, float& hitY);
 bool KclTileHitsUpward(u32 type, float startY, float endY, float startX, float endX, float tileSize, float& hitY);
