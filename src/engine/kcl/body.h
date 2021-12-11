@@ -71,6 +71,11 @@ struct KclBody
 private:
     void ApplyXInertia(float inertia);
     void ApplyYInertia(float inertia);
+    bool MoveInertiaAndCheckForCollision(float inertia, float x, float y, float maxX, float maxY, bool checkY, bool reverse);
+    bool CanMoveLeft(float x, float y, float& moveYOff);
+    bool CanMoveRight(float x, float y, float& moveYOff);
+    bool CanMoveUp(float x, float y, float& moveXOff);
+    bool CanMoveDown(float x, float y, float& moveXOff);
     
     /*bool CheckGround(float startY, float destY, float x, float tileSize, float& outY);
     bool CheckCeiling(float startY, float destY, float x, float tileSize, float& outY);
