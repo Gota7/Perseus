@@ -91,6 +91,29 @@ void KclBody::Update(float dt)
         position.y += velocity.y * dt;
     }
 
+    /*
+
+    // Detect if for blocks surrounding.
+    if (isCollideable)
+    {
+        const int BLOCK_OFF = 1;
+        float midX = (position.x + kclSize.x) / 2;
+        float midY = (position.y + kclSize.y) / 2;
+        float dummy;
+        if (velocity.y != 0)
+        {
+            if (hittingLeft) hittingLeft = !CanMoveLeft(position.x - BLOCK_OFF, midY, dummy);
+            if (hittingRight) hittingRight = !CanMoveRight(position.x + kclSize.x + BLOCK_OFF, midY, dummy);
+        }
+        if (velocity.x != 0)
+        {
+            if (hittingUp) hittingUp = !CanMoveUp(midX, position.y - BLOCK_OFF, dummy);
+            if (hittingDown) hittingDown = !CanMoveDown(midX, position.y + kclSize.y + BLOCK_OFF, dummy);
+        }
+    }
+
+    */
+
 }
 
 // Move the KCL body in the X direction.

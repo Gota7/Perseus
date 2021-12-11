@@ -4,6 +4,14 @@
 #include "engine.h"
 #include "game.h"
 
+std::map<u32, StateInitFunction> AGameGetBehaviorInits()
+{
+	return
+	{
+    	{ BHV_PLAYER, PlayerInitStates }
+	};
+}
+
 // Main method.
 int main(void)
 {
@@ -12,11 +20,15 @@ int main(void)
 	Screen::Init("Perseus: Wrath Of The Gorgons");
 
 	// Scene setup.
+	Entity::behaviorInits = AGameGetBehaviorInits();
 	Entity::CreateStates();
 	Gameplay gameplayScene;
 	Scene::LoadScene("Gameplay", &gameplayScene);
 	Scene::ChangeScene("Gameplay");
 	//Shaders::LoadMShader("Crt");
+
+	MFont fnt;
+	Asset::Load(&fnt, "Perseus");
 
 	// Main loop.
 	while (!WindowShouldClose())
@@ -27,7 +39,8 @@ int main(void)
 		BeginMode2D(*(Camera2D*)&Scene::GetCamera());
 		//Shaders::BeginMShader("Crt");
 		ClearBackground(BLACK);
-		Scene::DoDraw();	
+		Scene::DoDraw();
+		fnt.DrawString("Hello, this is Gota7!", 15, 15, COL_WHITE);
 		//Shaders::StopMShader();
 		EndMode2D();
 		if (DEBUG_MODE)

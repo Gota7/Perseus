@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fnt image="Perseus.png" tilewidth="7" tileheight="7" tilecount="94" columns="26" lineadvance="0">
+    <chars>
+        <char symbol="A"/>
+        <char symbol="B"/>
+        <char symbol="C"/>
+        <char symbol="D"/>
+        <char symbol="E"/>
+        <char symbol="F"/>
+        <char symbol="G"/>
+        <char symbol="H"/>
+        <char symbol="I"/>
+        <char symbol="J"/>
+        <char symbol="K"/>
+        <char symbol="L"/>
+        <char symbol="M"/>
+        <char symbol="N"/>
+        <char symbol="O"/>
+        <char symbol="P"/>
+        <char symbol="Q"/>
+        <char symbol="R"/>
+        <char symbol="S"/>
+        <char symbol="T"/>
+        <char symbol="U"/>
+        <char symbol="V"/>
+        <char symbol="W"/>
+        <char symbol="X"/>
+        <char symbol="Y"/>
+        <char symbol="Z"/>
+        <char symbol="a"/>
+        <char symbol="b"/>
+        <char symbol="c"/>
+        <char symbol="d"/>
+        <char symbol="e"/>
+        <char symbol="f"/>
+        <char symbol="g"/>
+        <char symbol="h"/>
+        <char symbol="i"/>
+        <char symbol="j"/>
+        <char symbol="k"/>
+        <char symbol="l"/>
+        <char symbol="m"/>
+        <char symbol="n"/>
+        <char symbol="o"/>
+        <char symbol="p"/>
+        <char symbol="q"/>
+        <char symbol="r"/>
+        <char symbol="s"/>
+        <char symbol="t"/>
+        <char symbol="u"/>
+        <char symbol="v"/>
+        <char symbol="w"/>
+        <char symbol="x"/>
+        <char symbol="y"/>
+        <char symbol="z"/>
+        <char symbol="1"/>
+        <char symbol="2"/>
+        <char symbol="3"/>
+        <char symbol="4"/>
+        <char symbol="5"/>
+        <char symbol="6"/>
+        <char symbol="7"/>
+        <char symbol="8"/>
+        <char symbol="9"/>
+        <char symbol="0"/>
+        <char symbol="!"/>
+        <char symbol="@"/>
+        <char symbol="#"/>
+        <char symbol="$"/>
+        <char symbol="%"/>
+        <char symbol="^"/>
+        <char symbol="&amp"/>
+        <char symbol="*"/>
+        <char symbol="("/>
+        <char symbol=")"/>
+        <char symbol="-"/>
+        <char symbol="_"/>
+        <char symbol="+"/>
+        <char symbol="="/>
+        <char symbol="~"/>
+        <char symbol="`"/>
+        <char symbol="{"/>
+        <char symbol="}"/>
+        <char symbol="["/>
+        <char symbol="]"/>
+        <char symbol="|"/>
+        <char symbol="\"/>
+        <char symbol=":"/>
+        <char symbol=";"/>
+        <char symbol="&quot"/>
+        <char symbol=","/>
+        <char symbol="."/>
+        <char symbol="&lt"/>
+        <char symbol="&gt"/>
+        <char symbol="?"/>
+        <char symbol="/"/>
+        <char symbol=""/>
+        <char symbol=" "/>
+    </chars>
+    <offs>
+        <off symbol="." x="-1" y="5" spacing="1"/>
+    </offs>
+    <kerning>
+        <pair a="." b="L" spacing="3"/>
+    </kerning>
+</fnt>

@@ -1,14 +1,6 @@
 #pragma once
 
-#include "backend.h"
-#include "input.h"
-#include "medusa.h"
-#include "screenData.h"
-#include "kcl.h"
-#include "../game/entities.h"
-
-// Forward declare.
-struct Entity;
+#include "types.h"
 
 // Forward declare.
 struct Entity;
@@ -17,6 +9,13 @@ struct Entity;
 typedef void (*StateInitFunction)(u32 behaviorId);
 typedef void (*StateFunction)(Entity* ent);
 typedef void (*InitCleanupFunction)(Entity* ent);
+
+#include "backend.h"
+#include "input.h"
+#include "medusa.h"
+#include "screenData.h"
+#include "kcl.h"
+#include "../game/entities.h"
 
 // Entity state.
 struct EntityState
@@ -34,7 +33,6 @@ struct Entity
     // State data.
 private:
     u32 behaviorId;
-    static std::map<u32, StateInitFunction> behaviorInits;
     static std::map<u32, InitCleanupFunction> inits;
     static std::map<u32, InitCleanupFunction> cleanups;
     static std::map<u32, std::pair<u32, EntityState*>> behaviorStates;
@@ -44,6 +42,7 @@ private:
     bool doCleanupFrame = false;
     void DoState();
 public:
+    static std::map<u32, StateInitFunction> behaviorInits;
     static void CreateStates(); 
     static void DeleteStates();
     static void RegisterInit(u32 behaviorId, InitCleanupFunction init);

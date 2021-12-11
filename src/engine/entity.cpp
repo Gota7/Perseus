@@ -3,11 +3,7 @@
 
 using namespace std;
 
-map<u32, StateInitFunction> Entity::behaviorInits = 
-{
-    { BHV_PLAYER, PlayerInitStates }
-};
-
+map<u32, StateInitFunction> Entity::behaviorInits;
 map<u32, pair<u32, EntityState*>> Entity::behaviorStates;
 map<u32, InitCleanupFunction> Entity::inits;
 map<u32, InitCleanupFunction> Entity::cleanups;
