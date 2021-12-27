@@ -10,12 +10,8 @@ map<u32, InitCleanupFunction> Entity::cleanups;
 
 void Entity::CreateStates()
 {
-    for (u32 i = 0; i < behaviorInits.size(); i++)
-    {
-        if (behaviorInits.find(i) != behaviorInits.end())
-        {
-            behaviorInits[i](i);
-        }
+    for(map<u32, StateInitFunction>::iterator it = behaviorInits.begin(); it != behaviorInits.end(); ++it) {
+        it->second(it->first);
     }
 }
 
@@ -27,6 +23,9 @@ void Entity::DeleteStates()
         {
             delete[] behaviorStates[i].second;
         }
+    }
+    for(map<u32, pair<u32, EntityState*>>::iterator it = behaviorStates.begin(); it != behaviorStates.end(); ++it) {
+        delete[] it->second.second;
     }
 }
 

@@ -4,9 +4,6 @@
 #include "engine.h"
 #include "game.h"
 
-#define MAX_SAMPLES               512
-#define MAX_SAMPLES_PER_UPDATE   4096
-
 // Behaviors.
 enum Behaviors : u32
 {
@@ -47,7 +44,7 @@ int main(void)
 	Asset::Load(&fnt, "Perseus");
 
 	AInitAudioDevices();
-	ASetAudioDefaultBufferSize(4096 * 16);
+	ASetAudioDefaultBufferSize(MAudioStream::BLOCK_SIZE);
 	MAudioStream stm;
 	Asset::Load(&stm, "Test");
 	stm.Play();

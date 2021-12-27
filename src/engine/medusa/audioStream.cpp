@@ -1,9 +1,10 @@
 #include "audioStream.h"
 #include "../backend.h"
-#include "raylib.h"
 
 using namespace std;
 using namespace tinyxml2;
+
+const s32 MAudioStream::BLOCK_SIZE = 4096;
 
 string MAudioStream::AssetFolderName()
 {
@@ -135,7 +136,7 @@ void MAudioStream::Update()
     if (!AIsAudioStreamPlaying(stream)) return;
     if (AIsAudioStreamProcessed(stream))
     {
-        int read = ReadSamples(4096);
+        int read = ReadSamples(BLOCK_SIZE);
         if (read == 0) Stop();
     }
 
@@ -198,8 +199,6 @@ int MAudioStream::ReadSamples(int toRead)
         currSample++;
         readSamples++;
     }
-    AudioStream* as = (AudioStream*)stream;
-    printf("%d\n", readSamples);
     AUpdateAudioStream(stream, encoding == AudioEncoding::PCM8 ? (void*)&pcm8Buff[0] : (void*)&pcm16Buff[0], readSamples);
     return readSamples;
 

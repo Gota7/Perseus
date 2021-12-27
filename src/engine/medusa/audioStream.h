@@ -30,6 +30,7 @@ struct Loop
 // Stream asset.
 struct MAudioStream : Asset
 {
+    static const s32 BLOCK_SIZE;
     u32 sampleRate;
     u8 numChannels;
     u8 numTracks;
