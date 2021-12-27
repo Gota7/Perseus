@@ -23,7 +23,67 @@ string MAudioStream::GetBINExtension()
 
 void MAudioStream::FromXML(const string& name)
 {
-    isFullyLoaded = true;
+    
+    // General info.
+    XMLDocument doc;
+    doc.LoadFile(Asset::GetFilePath(this, name, true).c_str());
+    XMLElement* root = doc.RootElement();
+    string wavPath = root->Attribute("wav");
+    gFile = GFile((Asset::assetFolder + AssetFolderName() + "/" + wavPath).c_str());
+    gFile.position = 0x10;
+    u32 fmtSize = gFile.ReadU32();
+    u16 fmt = gFile.ReadU16();
+    if (fmt != 0x1 && fmt != 0x11)
+    {
+        printf("INVALID WAVE FORMAT (UNKNOWN FMT MARKER)!\n");
+        return;
+    }
+    numChannels = (u8)gFile.ReadU16();
+    sampleRate = gFile.ReadU32();
+    gFile.position += 6;
+    u16 sampleSize = gFile.ReadU16();
+    switch (sampleSize) {
+        case 4:
+            encoding = AudioEncoding::IMAADPCM;
+            break;
+        case 8:
+            encoding = AudioEncoding::PCM8;
+            break;
+        case 16:
+            encoding = AudioEncoding::PCM16;
+            break;
+        default:
+            printf("INVALID WAVE FORMAT (BAD SAMPLE SIZE)!\n");
+            return;
+    }
+    
+    // TODO: LOOPS AND CHANNELS!!!
+    numTracks = 0;
+    numLoops = 0;
+
+    // Data info.
+    gFile.position = 0x14 + fmtSize;
+    if (gFile.ReadStrFixed(4) != "data") {
+        printf("INVALID WAVE FORMAT (BAD DATA BLOCK)!\n");
+        return;
+    }
+    u32 dataSize = gFile.ReadU32();
+    switch (encoding) {
+        case AudioEncoding::IMAADPCM:
+            numSamples = dataSize / numChannels * 2;
+            break;
+        case AudioEncoding::PCM8:
+            numSamples = dataSize / numChannels;
+            break;
+        case AudioEncoding::PCM16:
+            numSamples = dataSize / numChannels / 2;
+            break;
+    }
+    dataOff = gFile.position;
+    stream = ALoadAudioStream(sampleRate, encoding == AudioEncoding::PCM8 ? 8 : 16, numChannels);
+    ASetAudioStreamVolume(stream, volume);
+    ASetAudioStreamPitch(stream, pitch);
+
 }
 
 void MAudioStream::FromBIN(const std::string& name)
@@ -58,14 +118,13 @@ void MAudioStream::FromBIN(const std::string& name)
     loops.resize(numLoops);
     for (int i = 0; i < numLoops; i++)
     {
-        loops[i].startOffset = gFile.ReadU32();
-        loops[i].endOffset = gFile.ReadU32();
+        loops[i].startSample = gFile.ReadU32();
+        loops[i].endSample = gFile.ReadU32();
         loops[i].numRepetitions = gFile.ReadU8();
     }
 
     // We are at the data offset.
     dataOff = (u32)gFile.position;
-    isFullyLoaded = false;
     stream = ALoadAudioStream(sampleRate, encoding == AudioEncoding::PCM8 ? 8 : 16, numChannels);
     ASetAudioStreamVolume(stream, volume);
     ASetAudioStreamPitch(stream, pitch);
@@ -79,7 +138,7 @@ void MAudioStream::WriteXML(const std::string& destPath)
 
 void MAudioStream::WriteBIN(const std::string& destPath)
 {
-    if (!isFullyLoaded) return;
+
 }
 
 f32 MAudioStream::Volume()
@@ -114,6 +173,7 @@ void MAudioStream::Play()
     else
     {
         APlayAudioStream(stream);
+        gFile.position = dataOff;
     }
 }
 
@@ -126,7 +186,6 @@ void MAudioStream::Stop()
 {
     AStopAudioStream(stream);
     currSample = 0;
-    gFile.position = dataOff;
 }
 
 void MAudioStream::Update()
@@ -148,36 +207,13 @@ void MAudioStream::Unload()
     AUnloadAudioStream(stream);
 }
 
-/*struct rlAudioBuffer {
-    ma_data_converter converter;    // Audio data converter
-
-    float volume;                   // Audio buffer volume
-    float pitch;                    // Audio buffer pitch
-
-    bool playing;                   // Audio buffer state: AUDIO_PLAYING
-    bool paused;                    // Audio buffer state: AUDIO_PAUSED
-    bool looping;                   // Audio buffer looping, always true for AudioStreams
-    int usage;                      // Audio buffer usage mode: STATIC or STREAM
-
-    bool isSubBufferProcessed[2];   // SubBuffer processed (virtual double buffer)
-    unsigned int sizeInFrames;      // Total buffer size in frames
-    unsigned int frameCursorPos;    // Frame cursor position
-    unsigned int totalFramesProcessed;  // Total frames processed in this buffer (required for play timing)
-
-    unsigned char *data;            // Data buffer, on music stream keeps filling
-
-    rlAudioBuffer *next;             // Next audio buffer on the list
-    rlAudioBuffer *prev;             // Previous audio buffer on the list
-};*/
-
 int MAudioStream::ReadSamples(int toRead)
 {
     // Not reading.
-    if (isFullyLoaded) return 0;
     int readSamples = 0;
     vector<u16> pcm16Buff;
     vector<u8> pcm8Buff;
-    while (readSamples < toRead)
+    while (readSamples < toRead) // TODO: USE MEMCPY TO MAKE THIS IMPLEMENTATION MUCH FASTER!
     {
         if (currSample >= numSamples) break;
         for (int i = 0; i < numChannels; i++)

@@ -22,8 +22,8 @@ struct Track
 // Loop info.
 struct Loop
 {
-    u32 startOffset;
-    u32 endOffset;
+    u32 startSample;
+    u32 endSample;
     u8 numRepetitions;
 };
 
@@ -36,22 +36,14 @@ struct MAudioStream : Asset
     u8 numTracks;
     AudioEncoding encoding;
     u8 numLoops;
-    u16 blockSize;
-    u16 lastBlockSize;
-    u16 blockSamples;
-    u16 lastBlockSamples;
-    u32 numBlocks;
+    u32 numSamples;
     std::vector<Track> tracks;
     std::vector<Loop> loops;
 
     // Run-time data.
     GFile gFile;
     u32 dataOff;
-    u8 currBuff = 0;
-    bool isFullyLoaded;
     int currSample = 0;
-    int samplesLeftInBlock = 0;
-    int numSamples;
     bool paused = false;
     void* stream;
 
