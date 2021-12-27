@@ -75,6 +75,5 @@ struct MAudioStream : Asset
 private:
     f32 volume = 1.0;
     f32 pitch = 1.0;
-    long SampleToBlockAndOff(int sampleNum);
     int ReadSamples(int numSamples);
 };

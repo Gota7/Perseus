@@ -28,31 +28,27 @@ void MAudioStream::FromBIN(const std::string& name)
 {
 
     // General data.
-    GFile f = GFile(Asset::GetFilePath(this, name).c_str());
-    if (f.ReadStrFixed(4) != "MSTM")
+    gFile = GFile(Asset::GetFilePath(this, name).c_str());
+    if (gFile.ReadStrFixed(4) != "MSTM")
     {
         throw string("Invalid Medusa STreaM Binary!");
     }
-    sampleRate = f.ReadU32();
-    numChannels = f.ReadU8();
-    numTracks = f.ReadU8();
-    encoding = (AudioEncoding)f.ReadU8();
-    numLoops = f.ReadU8();
-    blockSize = f.ReadU16();
-    lastBlockSize = f.ReadU16();
-    blockSamples = f.ReadU16();
-    lastBlockSamples = f.ReadU16();
-    numBlocks = f.ReadU32();
+    sampleRate = gFile.ReadU32();
+    numChannels = gFile.ReadU8();
+    numTracks = gFile.ReadU8();
+    encoding = (AudioEncoding)gFile.ReadU8();
+    numLoops = gFile.ReadU8();
+    numSamples = gFile.ReadU32();
 
     // Tracks.
     tracks.resize(numTracks);
     for (int i = 0; i < numTracks; i++)
     {
-        tracks[i].numChannels = f.ReadU8();
+        tracks[i].numChannels = gFile.ReadU8();
         tracks[i].channels.resize(tracks[i].numChannels);
         for (int j = 0; j < tracks[i].numChannels; j++)
         {
-            tracks[i].channels[j] = f.ReadU8();
+            tracks[i].channels[j] = gFile.ReadU8();
         }
     }
 
@@ -60,15 +56,15 @@ void MAudioStream::FromBIN(const std::string& name)
     loops.resize(numLoops);
     for (int i = 0; i < numLoops; i++)
     {
-        loops[i].startOffset = f.ReadU32();
-        loops[i].endOffset = f.ReadU32();
-        loops[i].numRepetitions = f.ReadU8();
+        loops[i].startOffset = gFile.ReadU32();
+        loops[i].endOffset = gFile.ReadU32();
+        loops[i].numRepetitions = gFile.ReadU8();
     }
 
     // We are at the data offset.
-    dataOff = (u32)f.position;
+    dataOff = (u32)gFile.position;
     isFullyLoaded = false;
-    stream = ALoadAudioStream(sampleRate, encoding == AudioEncoding::PCM8 ? 1 : 2, numChannels);
+    stream = ALoadAudioStream(sampleRate, encoding == AudioEncoding::PCM8 ? 8 : 16, numChannels);
     ASetAudioStreamVolume(stream, volume);
     ASetAudioStreamPitch(stream, pitch);
 
@@ -106,18 +102,6 @@ void MAudioStream::SetPitch(f32 pitch)
     ASetAudioStreamPitch(stream, pitch);
 }
 
-// TODO: LOOP INFO!!!
-int MAudioStream::ReadSamples(int numSamples)
-{
-    // Not reading.
-    if (!AIsAudioStreamPlaying(stream)) return 0;
-
-    // TODO!!!
-    int readSamples = 0;
-    return readSamples;
-
-}
-
 void MAudioStream::Play()
 {
     if (paused)
@@ -139,15 +123,19 @@ void MAudioStream::Pause()
 void MAudioStream::Stop()
 {
     AStopAudioStream(stream);
+    currSample = 0;
+    gFile.position = dataOff;
 }
 
 void MAudioStream::Update()
 {
 
     // Check to see if more samples are needed.
+    if (!AIsAudioStreamPlaying(stream)) return;
     if (AIsAudioStreamProcessed(stream))
     {
-        
+        int read = ReadSamples(4096);
+        if (read == 0) Stop();
     }
 
 }
@@ -156,4 +144,39 @@ void MAudioStream::Unload()
 {
     gFile.Close();
     AUnloadAudioStream(stream);
+}
+
+int MAudioStream::ReadSamples(int toRead)
+{
+    // Not reading.
+    if (isFullyLoaded) return 0;
+    int readSamples = 0;
+    vector<u16> pcm16Buff;
+    vector<u8> pcm8Buff;
+    while (readSamples < toRead)
+    {
+        if (currSample >= numSamples) break;
+        if (encoding == AudioEncoding::PCM8)
+        {
+            pcm8Buff.push_back(gFile.ReadU8());
+        }
+        else if (encoding == AudioEncoding::PCM16)
+        {
+            pcm16Buff.push_back(gFile.ReadU16());
+        }
+        else if (encoding == AudioEncoding::IMAADPCM)
+        {
+
+        }
+        else
+        {
+            break;
+        }
+        currSample++;
+        readSamples++;
+    }
+    printf("%d\n", readSamples);
+    AUpdateAudioStream(stream, encoding == AudioEncoding::PCM8 ? (void*)&pcm8Buff[0] : (void*)&pcm16Buff[0], readSamples);
+    return readSamples;
+
 }

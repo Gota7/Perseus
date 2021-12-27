@@ -30,6 +30,12 @@ int main(void)
 	MFont fnt;
 	Asset::Load(&fnt, "Perseus");
 
+	MAudioStream stm;
+	AInitAudioDevices();
+	ASetAudioDefaultBufferSize(4096);
+	Asset::Load(&stm, "Test");
+	stm.Play();
+
 	// Main loop.
 	while (!WindowShouldClose())
 	{
@@ -49,6 +55,7 @@ int main(void)
 
 		// Updating.
 		Scene::DoUpdate();
+		stm.Update();
 
 	}
 	
@@ -57,6 +64,7 @@ int main(void)
 	Scene::ChangeScene("");
 	Entity::DeleteStates();
 	CloseWindow();
+	ACloseAudioDevices();
 	return 0;
 
 }
