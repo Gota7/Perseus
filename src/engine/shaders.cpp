@@ -3,7 +3,7 @@
 
 using namespace std;
 
-map<string, AShader> Shaders::loadedShaders;
+map<string, void*> Shaders::loadedShaders;
 
 // Load shader.
 void Shaders::LoadMShader(const string& shaderName, bool useVertexShader, bool useFragmentShader)

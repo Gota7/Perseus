@@ -4,19 +4,12 @@
 #include <map>
 #include <string>
 
-// Shader class.
-struct AShader
-{
-    u32 id;
-    s32* locs;
-};
-
 // Shader utils.
 struct Shaders
 {
 
     // Data.
-    static std::map<std::string, AShader> loadedShaders;
+    static std::map<std::string, void*> loadedShaders;
 
     // Load shader.
     static void LoadMShader(const std::string& shaderName, bool useVertexShader = true, bool useFragmentShader = true);

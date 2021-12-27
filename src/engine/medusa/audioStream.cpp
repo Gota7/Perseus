@@ -1,4 +1,5 @@
 #include "audioStream.h"
+#include "../backend.h"
 
 using namespace std;
 using namespace tinyxml2;
@@ -67,11 +68,9 @@ void MAudioStream::FromBIN(const std::string& name)
     // We are at the data offset.
     dataOff = (u32)f.position;
     isFullyLoaded = false;
-    channelBuffers = new ChannelBuffer[numChannels];
-    for (int i = 0; i < numChannels; i++)
-    {
-        // Blocks 0-1 are normal blocks, 2 is last block.
-    }
+    stream = ALoadAudioStream(sampleRate, encoding == AudioEncoding::PCM8 ? 1 : 2, numChannels);
+    ASetAudioStreamVolume(stream, volume);
+    ASetAudioStreamPitch(stream, pitch);
 
 }
 
@@ -85,7 +84,76 @@ void MAudioStream::WriteBIN(const std::string& destPath)
     if (!isFullyLoaded) return;
 }
 
+f32 MAudioStream::Volume()
+{
+    return volume;
+}
+
+f32 MAudioStream::Pitch()
+{
+    return pitch;
+}
+
+void MAudioStream::SetVolume(f32 volume)
+{
+    this->volume = volume;
+    ASetAudioStreamVolume(stream, volume);
+}
+
+void MAudioStream::SetPitch(f32 pitch)
+{
+    this->pitch = pitch;
+    ASetAudioStreamPitch(stream, pitch);
+}
+
+// TODO: LOOP INFO!!!
+int MAudioStream::ReadSamples(int numSamples)
+{
+    // Not reading.
+    if (!AIsAudioStreamPlaying(stream)) return 0;
+
+    // TODO!!!
+    int readSamples = 0;
+    return readSamples;
+
+}
+
+void MAudioStream::Play()
+{
+    if (paused)
+    {
+        AResumeAudioStream(stream);
+        paused = false;
+    }
+    else
+    {
+        APlayAudioStream(stream);
+    }
+}
+
+void MAudioStream::Pause()
+{
+    APauseAudioStream(stream);
+}
+
+void MAudioStream::Stop()
+{
+    AStopAudioStream(stream);
+}
+
+void MAudioStream::Update()
+{
+
+    // Check to see if more samples are needed.
+    if (AIsAudioStreamProcessed(stream))
+    {
+        
+    }
+
+}
+
 void MAudioStream::Unload()
 {
-    delete[] channelBuffers;
+    gFile.Close();
+    AUnloadAudioStream(stream);
 }

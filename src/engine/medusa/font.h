@@ -3,7 +3,6 @@
 #include "../types.h"
 #include "../color.h"
 #include "asset.h"
-#include "texture.h"
 #include <map>
 
 // Character entry.
@@ -20,7 +19,7 @@ struct MFontCharInfo
 struct MFont : Asset
 {
     std::string imagePath;
-    ATex tex;
+    void* tex;
     u16 tileWidth;
     u16 tileHeight;
     u32 numTiles;

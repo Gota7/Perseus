@@ -4,7 +4,6 @@
 #include "input.h"
 #include "shaders.h"
 #include "vec.h"
-#include "medusa/texture.h"
 #include <string>
 
 /*
@@ -65,25 +64,73 @@ bool AButtonReleased(AInputButton button);
 void ADrawRectangle(float x, float y, float width, float height, AColor color = COL_WHITE);
 
 // Draw a texture.
-void ADrawTexture(ATex tex, float srcX, float srcY, float srcWidth, float srcHeight, float destX, float destY, float destWidth, float destHeight, AVec2 origin = ZERO_VEC, float rotation = 0, AColor tint = COL_WHITE);
+void ADrawTexture(void* tex, float srcX, float srcY, float srcWidth, float srcHeight, float destX, float destY, float destWidth, float destHeight, AVec2 origin = ZERO_VEC, float rotation = 0, AColor tint = COL_WHITE);
 
 // Load a texture.
-ATex ALoadTexture(std::string path);
+void* ALoadTexture(std::string path);
 
 // Unload a texture.
-void AUnloadTexture(ATex tex);
+void AUnloadTexture(void* tex);
 
 // Load a shader.
-AShader ALoadShader(std::string vertexFileName, std::string faceFileName);
+void* ALoadShader(std::string vertexFileName, std::string faceFileName);
 
 // Unload a shader.
-void AUnloadShader(AShader shader);
+void AUnloadShader(void* shader);
 
 // Begin shader mode.
-void ABeginShaderMode(AShader shader);
+void ABeginShaderMode(void* shader);
 
 // End shader mode.
 void AEndShaderMode();
+
+
+
+/*
+    Audio functions.
+*/
+
+// Initialize audio devices.
+void AInitAudioDevices();
+
+// Set default buffer size.
+void ASetAudioDefaultBufferSize(u32 numSamples);
+
+// Load an audio stream.
+void* ALoadAudioStream(u32 sampleRate, u32 sampleSize, u32 channels);
+
+// Unload an audio stream.
+void AUnloadAudioStream(void* stream);
+
+// If an audio stream has played through all its samples.
+bool AIsAudioStreamProcessed(void* stream);
+
+// Update an audio stream with more data to play.
+void AUpdateAudioStream(void* stream, const void* data, s32 samplesCount);
+
+// Play an audio stream.
+void APlayAudioStream(void* stream);
+
+// Pause an audio stream.
+void APauseAudioStream(void* stream);
+
+// Resume an audio stream.
+void AResumeAudioStream(void* stream);
+
+// Stop an audio stream.
+void AStopAudioStream(void* stream);
+
+// If an audio stream is playing.
+bool AIsAudioStreamPlaying(void* stream);
+
+// Set the volume of an audio stream.
+void ASetAudioStreamVolume(void* stream, f32 volume);
+
+// Set the pitch of an audio stream.
+void ASetAudioStreamPitch(void* stream, f32 pitch);
+
+// Close audio devices.
+void ACloseAudioDevices();
 
 
 

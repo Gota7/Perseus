@@ -75,63 +75,40 @@ void ADrawRectangle(float x, float y, float width, float height, AColor color)
     DrawRectangleRec({ x, y, width, height }, c);
 }
 
-void ADrawTexture(ATex tex, float srcX, float srcY, float srcWidth, float srcHeight, float destX, float destY, float destWidth, float destHeight, AVec2 origin, float rotation, AColor tint)
+void ADrawTexture(void* tex, float srcX, float srcY, float srcWidth, float srcHeight, float destX, float destY, float destWidth, float destHeight, AVec2 origin, float rotation, AColor tint)
 {
-    Texture2D ret;
-    ret.id = tex.id;
-    ret.format = tex.format;
-    ret.width = tex.width;
-    ret.height = tex.height;
-    ret.mipmaps = tex.mipmaps;
-    DrawTexturePro(ret, { srcX, srcY, srcWidth, srcHeight }, { destX, destY, destWidth, destHeight }, { origin.x, origin.y }, rotation, { tint.r, tint.g, tint.b, tint.a });
+    DrawTexturePro(*(Texture2D*)tex, { srcX, srcY, srcWidth, srcHeight }, { destX, destY, destWidth, destHeight }, { origin.x, origin.y }, rotation, { tint.r, tint.g, tint.b, tint.a });
 }
 
-ATex ALoadTexture(std::string path)
+void* ALoadTexture(std::string path)
 {
-    Texture2D tex = LoadTexture(path.c_str());
-    ATex ret;
-    ret.id = tex.id;
-    ret.format = tex.format;
-    ret.width = tex.width;
-    ret.height = tex.height;
-    ret.mipmaps = tex.mipmaps;
+    void* ret = new Texture2D;
+    *(Texture2D*)ret = LoadTexture(path.c_str());
     return ret;
 }
 
-void AUnloadTexture(ATex tex)
+void AUnloadTexture(void* tex)
 {
-    Texture2D ret;
-    ret.id = tex.id;
-    ret.format = tex.format;
-    ret.width = tex.width;
-    ret.height = tex.height;
-    ret.mipmaps = tex.mipmaps;
-    UnloadTexture(ret);
+    UnloadTexture(*(Texture2D*)tex);
+    delete (Texture2D*)tex;
 }
 
-AShader ALoadShader(std::string vertexFileName, std::string faceFileName)
+void* ALoadShader(std::string vertexFileName, std::string faceFileName)
 {
-    Shader shader = LoadShader((vertexFileName.compare("") != 0) ? vertexFileName.c_str() : NULL, (faceFileName.compare("") != 0) ? faceFileName.c_str() : NULL);
-    AShader ret;
-    ret.id = shader.id;
-    ret.locs = shader.locs;
+    void* ret = new Shader;
+    *(Shader*)ret = LoadShader((vertexFileName.compare("") != 0) ? vertexFileName.c_str() : NULL, (faceFileName.compare("") != 0) ? faceFileName.c_str() : NULL);
     return ret;
 }
 
-void AUnloadShader(AShader shader)
+void AUnloadShader(void* shader)
 {
-    Shader s;
-    s.id = shader.id;
-    s.locs = shader.locs;
-    UnloadShader(s);
+    UnloadShader(*(Shader*)shader);
+    delete (Shader*)shader;
 }
 
-void ABeginShaderMode(AShader shader)
+void ABeginShaderMode(void* shader)
 {
-    Shader s;
-    s.id = shader.id;
-    s.locs = shader.locs;
-    BeginShaderMode(s);
+    BeginShaderMode(*(Shader*)shader);
 }
 
 void AEndShaderMode()
@@ -147,4 +124,77 @@ std::string AGetWorkingDirectory()
 std::string AGetFileNameWithoutExtension(std::string name)
 {
     return std::string(GetFileNameWithoutExt(name.c_str()));
+}
+
+void AInitAudioDevices()
+{
+    InitAudioDevice();
+}
+
+void ASetAudioDefaultBufferSize(u32 numSamples)
+{
+    SetAudioStreamBufferSizeDefault(numSamples);
+}
+
+void* ALoadAudioStream(u32 sampleRate, u32 sampleSize, u32 channels)
+{
+    void* ret = new AudioStream;
+    *(AudioStream*)ret = LoadAudioStream(sampleRate, sampleSize, channels);
+    return ret;
+}
+
+void AUnloadAudioStream(void* stream)
+{
+    UnloadAudioStream(*(AudioStream*)stream);
+    delete (AudioStream*)stream;
+}
+
+bool AIsAudioStreamProcessed(void* stream)
+{
+    return IsAudioStreamProcessed(*(AudioStream*)stream);
+}
+
+void AUpdateAudioStream(void* stream, const void* data, s32 samplesCount)
+{
+    UpdateAudioStream(*(AudioStream*)stream, data, samplesCount);
+}
+
+void APlayAudioStream(void* stream)
+{
+    PlayAudioStream(*(AudioStream*)stream);
+}
+
+void APauseAudioStream(void* stream)
+{
+    PauseAudioStream(*(AudioStream*)stream);
+}
+
+void AResumeAudioStream(void* stream)
+{
+    ResumeAudioStream(*(AudioStream*)stream);
+}
+
+void AStopAudioStream(void* stream)
+{
+    StopAudioStream(*(AudioStream*)stream);
+}
+
+bool AIsAudioStreamPlaying(void* stream)
+{
+    return IsAudioStreamPlaying(*(AudioStream*)stream);
+}
+
+void ASetAudioStreamVolume(void* stream, f32 volume)
+{
+    SetAudioStreamVolume(*(AudioStream*)stream, volume);
+}
+
+void ASetAudioStreamPitch(void* stream, f32 pitch)
+{
+    SetAudioStreamPitch(*(AudioStream*)stream, pitch);
+}
+
+void ACloseAudioDevices()
+{
+    CloseAudioDevice();
 }

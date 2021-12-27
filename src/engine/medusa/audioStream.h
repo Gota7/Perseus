@@ -27,9 +27,6 @@ struct Loop
     u8 numRepetitions;
 };
 
-// Channel buffer.
-typedef u8* ChannelBuffer[3];
-
 // Stream asset.
 struct MAudioStream : Asset
 {
@@ -50,10 +47,12 @@ struct MAudioStream : Asset
     GFile gFile;
     u32 dataOff;
     u8 currBuff = 0;
-    ChannelBuffer* channelBuffers;
     bool isFullyLoaded;
-    bool onLeftBuffer = true;
-    u8 nextBlock = 0;
+    int currSample = 0;
+    int samplesLeftInBlock = 0;
+    int numSamples;
+    bool paused = false;
+    void* stream;
 
     // Implement.
     std::string AssetFolderName();
@@ -63,6 +62,19 @@ struct MAudioStream : Asset
     void FromBIN(const std::string& name);
     void WriteXML(const std::string& destPath);
     void WriteBIN(const std::string& destPath);
+    f32 Volume();
+    f32 Pitch();
+    void SetVolume(f32 volume);
+    void SetPitch(f32 pitch);
+    void Play();
+    void Pause();
+    void Stop();
+    void Update();
     void Unload();
-    void LoadNextBlock(); // MUST ACCOUNT FOR CURRENT LOOP TOO!!!
+
+private:
+    f32 volume = 1.0;
+    f32 pitch = 1.0;
+    long SampleToBlockAndOff(int sampleNum);
+    int ReadSamples(int numSamples);
 };
