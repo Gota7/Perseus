@@ -4,6 +4,22 @@
 #include "engine.h"
 #include "game.h"
 
+#define MAX_SAMPLES               512
+#define MAX_SAMPLES_PER_UPDATE   4096
+
+// Behaviors.
+enum Behaviors : u32
+{
+    BHV_DRAW_ONLY,
+    BHV_DRAW_AND_COLLIDE,
+    BHV_COLLIDE_ONLY,
+    BHV_PLAYER,
+    BHV_PLAYER_SPAWNPOINT,
+    BHV_WARP,
+    BHV_COUNT,
+    BHV_NONE = 0xFFFFFFFF
+};
+
 std::map<u32, StateInitFunction> AGameGetBehaviorInits()
 {
 	return
@@ -30,9 +46,9 @@ int main(void)
 	MFont fnt;
 	Asset::Load(&fnt, "Perseus");
 
-	MAudioStream stm;
 	AInitAudioDevices();
-	ASetAudioDefaultBufferSize(4096);
+	ASetAudioDefaultBufferSize(4096 * 16);
+	MAudioStream stm;
 	Asset::Load(&stm, "Test");
 	stm.Play();
 

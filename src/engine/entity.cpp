@@ -10,7 +10,7 @@ map<u32, InitCleanupFunction> Entity::cleanups;
 
 void Entity::CreateStates()
 {
-    for (u32 i = 0; i < BHV_COUNT; i++)
+    for (u32 i = 0; i < behaviorInits.size(); i++)
     {
         if (behaviorInits.find(i) != behaviorInits.end())
         {
@@ -21,7 +21,7 @@ void Entity::CreateStates()
 
 void Entity::DeleteStates()
 {
-    for (int i = 0; i < BHV_COUNT; i++)
+    for (int i = 0; i < behaviorInits.size(); i++)
     {
         if (behaviorStates.find(i) != behaviorStates.end())
         {
@@ -193,7 +193,7 @@ void Entity::UpdatePhysics()
 
 void Entity::Spawn(MEntity* ent)
 {
-    behaviorId = BHV_PLAYER;
+    behaviorId = 3; // TEMP FOR TESTING!!!
     id = behaviorId;
     if (inits.find(behaviorId) != inits.end())
     {

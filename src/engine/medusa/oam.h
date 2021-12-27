@@ -5,19 +5,6 @@
 #include <string>
 #include <vector>
 
-// Behaviors.
-enum Behaviors : u32
-{
-    BHV_DRAW_ONLY,
-    BHV_DRAW_AND_COLLIDE,
-    BHV_COLLIDE_ONLY,
-    BHV_PLAYER,
-    BHV_PLAYER_SPAWNPOINT,
-    BHV_WARP,
-    BHV_COUNT,
-    BHV_NONE = 0xFFFFFFFF
-};
-
 // Tiling mode.
 enum TileMode
 {
@@ -99,7 +86,7 @@ struct OamPreset
 
     u32 id;
     std::string name;
-    Behaviors behavior;
+    u32 behavior;
     u32 objectId;
     u8 dataFlag;
     u64 data[2];

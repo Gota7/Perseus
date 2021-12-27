@@ -1,5 +1,6 @@
 #include "audioStream.h"
 #include "../backend.h"
+#include "raylib.h"
 
 using namespace std;
 using namespace tinyxml2;
@@ -146,6 +147,28 @@ void MAudioStream::Unload()
     AUnloadAudioStream(stream);
 }
 
+/*struct rlAudioBuffer {
+    ma_data_converter converter;    // Audio data converter
+
+    float volume;                   // Audio buffer volume
+    float pitch;                    // Audio buffer pitch
+
+    bool playing;                   // Audio buffer state: AUDIO_PLAYING
+    bool paused;                    // Audio buffer state: AUDIO_PAUSED
+    bool looping;                   // Audio buffer looping, always true for AudioStreams
+    int usage;                      // Audio buffer usage mode: STATIC or STREAM
+
+    bool isSubBufferProcessed[2];   // SubBuffer processed (virtual double buffer)
+    unsigned int sizeInFrames;      // Total buffer size in frames
+    unsigned int frameCursorPos;    // Frame cursor position
+    unsigned int totalFramesProcessed;  // Total frames processed in this buffer (required for play timing)
+
+    unsigned char *data;            // Data buffer, on music stream keeps filling
+
+    rlAudioBuffer *next;             // Next audio buffer on the list
+    rlAudioBuffer *prev;             // Previous audio buffer on the list
+};*/
+
 int MAudioStream::ReadSamples(int toRead)
 {
     // Not reading.
@@ -175,6 +198,7 @@ int MAudioStream::ReadSamples(int toRead)
         currSample++;
         readSamples++;
     }
+    AudioStream* as = (AudioStream*)stream;
     printf("%d\n", readSamples);
     AUpdateAudioStream(stream, encoding == AudioEncoding::PCM8 ? (void*)&pcm8Buff[0] : (void*)&pcm16Buff[0], readSamples);
     return readSamples;

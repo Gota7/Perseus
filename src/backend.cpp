@@ -131,7 +131,7 @@ void AInitAudioDevices()
     InitAudioDevice();
 }
 
-void ASetAudioDefaultBufferSize(u32 numSamples)
+void ASetAudioDefaultBufferSize(s32 numSamples)
 {
     SetAudioStreamBufferSizeDefault(numSamples);
 }

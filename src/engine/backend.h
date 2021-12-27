@@ -94,7 +94,7 @@ void AEndShaderMode();
 void AInitAudioDevices();
 
 // Set default buffer size.
-void ASetAudioDefaultBufferSize(u32 numSamples);
+void ASetAudioDefaultBufferSize(s32 numSamples);
 
 // Load an audio stream.
 void* ALoadAudioStream(u32 sampleRate, u32 sampleSize, u32 channels);
