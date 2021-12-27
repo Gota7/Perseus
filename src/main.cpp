@@ -46,7 +46,7 @@ int main(void)
 	AInitAudioDevices();
 	ASetAudioDefaultBufferSize(MAudioStream::BLOCK_SIZE);
 	MAudioStream stm;
-	Asset::Load(&stm, "Test");
+	Asset::Load(&stm, "Test2");
 	stm.Play();
 
 	// Main loop.

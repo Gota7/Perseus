@@ -180,21 +180,24 @@ int MAudioStream::ReadSamples(int toRead)
     while (readSamples < toRead)
     {
         if (currSample >= numSamples) break;
-        if (encoding == AudioEncoding::PCM8)
+        for (int i = 0; i < numChannels; i++)
         {
-            pcm8Buff.push_back(gFile.ReadU8());
-        }
-        else if (encoding == AudioEncoding::PCM16)
-        {
-            pcm16Buff.push_back(gFile.ReadU16());
-        }
-        else if (encoding == AudioEncoding::IMAADPCM)
-        {
+            if (encoding == AudioEncoding::PCM8)
+            {
+                pcm8Buff.push_back(gFile.ReadU8());
+            }
+            else if (encoding == AudioEncoding::PCM16)
+            {
+                pcm16Buff.push_back(gFile.ReadU16());
+            }
+            else if (encoding == AudioEncoding::IMAADPCM)
+            {
 
-        }
-        else
-        {
-            break;
+            }
+            else
+            {
+                break;
+            }
         }
         currSample++;
         readSamples++;
