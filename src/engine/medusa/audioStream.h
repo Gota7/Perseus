@@ -45,7 +45,7 @@ struct MAudioStream : Asset
     u32 dataOff;
     int currSample = 0;
     bool paused = false;
-    void* stream;
+    void* stream; // TODO: SOUND QUEUE WITH MULTIPLE STREAMS!!!
 
     // Implement.
     std::string AssetFolderName();
@@ -69,4 +69,5 @@ private:
     f32 volume = 1.0;
     f32 pitch = 1.0;
     int ReadSamples(int numSamples);
+    void PositionReaderAtSample(int sampleNum);
 };

@@ -42,7 +42,8 @@ void MAudioStream::FromXML(const string& name)
     sampleRate = gFile.ReadU32();
     gFile.position += 6;
     u16 sampleSize = gFile.ReadU16();
-    switch (sampleSize) {
+    switch (sampleSize)
+    {
         case 4:
             encoding = AudioEncoding::IMAADPCM;
             break;
@@ -57,18 +58,41 @@ void MAudioStream::FromXML(const string& name)
             return;
     }
     
-    // TODO: LOOPS AND CHANNELS!!!
+    // Read loops and tracks.
     numTracks = 0;
     numLoops = 0;
+    XMLElement* child = root->FirstChildElement();
+    while (child != NULL)
+    {
+        if (string(child->Name()) == "loop")
+        {
+            Loop l;
+            l.startSample = child->IntAttribute("start");
+            l.endSample = child->IntAttribute("end");
+            l.numRepetitions = child->IntAttribute("numLoops");
+            numLoops++;
+            loops.push_back(l);
+        }
+        else if (string(child->Name()) == "track")
+        {
+            Track t;
+            string rawChannels = child->Attribute("channels");
+            numTracks++;
+            tracks.push_back(t);
+        }
+        child = child->NextSiblingElement();
+    }
 
     // Data info.
     gFile.position = 0x14 + fmtSize;
-    if (gFile.ReadStrFixed(4) != "data") {
+    if (gFile.ReadStrFixed(4) != "data")
+    {
         printf("INVALID WAVE FORMAT (BAD DATA BLOCK)!\n");
         return;
     }
     u32 dataSize = gFile.ReadU32();
-    switch (encoding) {
+    switch (encoding)
+    {
         case AudioEncoding::IMAADPCM:
             numSamples = dataSize / numChannels * 2;
             break;
@@ -209,36 +233,54 @@ void MAudioStream::Unload()
 
 int MAudioStream::ReadSamples(int toRead)
 {
-    // Not reading.
-    int readSamples = 0;
-    vector<u16> pcm16Buff;
-    vector<u8> pcm8Buff;
-    while (readSamples < toRead) // TODO: USE MEMCPY TO MAKE THIS IMPLEMENTATION MUCH FASTER!
+
+    // Find end.
+    s32 start = currSample;
+    s32 end = currSample + toRead;
+    bool forceNonzeroRet = false;
+    for (int i = 0; i < numLoops; i++)
     {
-        if (currSample >= numSamples) break;
-        for (int i = 0; i < numChannels; i++)
+        Loop* l = &loops[i];
+        if (end > l->endSample && l->numRepetitions != 255)
         {
-            if (encoding == AudioEncoding::PCM8)
+            end = l->endSample;
+            if (l->numRepetitions != 0)
             {
-                pcm8Buff.push_back(gFile.ReadU8());
+                l->numRepetitions--;
+                if (l->numRepetitions == 0) l->numRepetitions = 255;
             }
-            else if (encoding == AudioEncoding::PCM16)
-            {
-                pcm16Buff.push_back(gFile.ReadU16());
-            }
-            else if (encoding == AudioEncoding::IMAADPCM)
-            {
-
-            }
-            else
-            {
-                break;
-            }
+            currSample = l->startSample;
+            forceNonzeroRet = true;
+            break;
         }
-        currSample++;
-        readSamples++;
     }
-    AUpdateAudioStream(stream, encoding == AudioEncoding::PCM8 ? (void*)&pcm8Buff[0] : (void*)&pcm16Buff[0], readSamples);
-    return readSamples;
+    PositionReaderAtSample(start);
+    u32 size = (end - start) * numChannels;
+    if (encoding == PCM16) size *= 2;
+    if (encoding == IMAADPCM) size /= 2;
+    void* buff = malloc(size);
+    gFile.Read(buff, size);
+    AUpdateAudioStream(stream, buff, end - start);
+    free(buff);
+    if (!forceNonzeroRet) currSample = end;
+    return forceNonzeroRet ? 1 : (end - start);
 
+}
+
+void MAudioStream::PositionReaderAtSample(int sampleNum)
+{
+    u32 off = 0;
+    switch (encoding)
+    {
+        case AudioEncoding::IMAADPCM:
+            // TODO!!!
+            break;
+        case AudioEncoding::PCM8:
+            off = sampleNum * numChannels;
+            break;
+        case AudioEncoding::PCM16:
+            off = sampleNum * numChannels * 2;
+            break;
+    }
+    gFile.position = dataOff + off;
 }
