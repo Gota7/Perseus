@@ -45,10 +45,8 @@ int main(void)
 
 	AInitAudioDevices();
 	ASetAudioDefaultBufferSize(MAudioStream::BLOCK_SIZE);
-	MAudioStream stm;
-	Asset::Load(&stm, "Test");
-	stm.Play();
-	stm.SetVolume(0.45);
+	MAudioWave wav;
+	Asset::Load(&wav, "GotaEh");
 
 	// Main loop.
 	while (!WindowShouldClose())
@@ -69,7 +67,8 @@ int main(void)
 
 		// Updating.
 		Scene::DoUpdate();
-		stm.Update();
+		wav.Update();
+		if (AButtonPressed(AInputButton::BUTTON_ATTACK)) wav.Play();
 
 	}
 	

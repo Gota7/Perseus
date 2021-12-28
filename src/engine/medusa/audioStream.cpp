@@ -204,12 +204,14 @@ void MAudioStream::Play()
 void MAudioStream::Pause()
 {
     APauseAudioStream(stream);
+    paused = true;
 }
 
 void MAudioStream::Stop()
 {
     AStopAudioStream(stream);
     currSample = 0;
+    paused = false;
 }
 
 void MAudioStream::Update()
@@ -254,6 +256,7 @@ int MAudioStream::ReadSamples(int toRead)
             break;
         }
     }
+    if (end > numSamples) end = numSamples;
     PositionReaderAtSample(start);
     u32 size = (end - start) * numChannels;
     if (encoding == PCM16) size *= 2;
