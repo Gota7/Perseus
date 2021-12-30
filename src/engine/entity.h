@@ -58,7 +58,7 @@ public:
 
     // Entity data.
     u32 id;
-    u64 data[2];
+    u8 data[16];
     void* extData; // For individual entities to take advantage of storing extra data.
 
     // Physics functions.

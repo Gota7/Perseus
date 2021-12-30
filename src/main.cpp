@@ -47,6 +47,10 @@ int main(void)
 	ASetAudioDefaultBufferSize(MAudioStream::BLOCK_SIZE);
 	MAudioWave wav;
 	Asset::Load(&wav, "GotaEh");
+	MAudioStream stm;
+	Asset::Load(&stm, "Test");
+	stm.Play(0);
+	stm.SetVolume(0, .25);
 
 	// Main loop.
 	while (!WindowShouldClose())
@@ -67,6 +71,7 @@ int main(void)
 
 		// Updating.
 		Scene::DoUpdate();
+		stm.Update();
 		wav.Update();
 		if (AButtonPressed(AInputButton::BUTTON_ATTACK)) wav.Play();
 
@@ -74,6 +79,8 @@ int main(void)
 	
 	// Done.
 	//Shaders::UnloadMShader("Crt");
+	stm.Unload();
+	wav.Unload();
 	Scene::ChangeScene("");
 	Entity::DeleteStates();
 	CloseWindow();

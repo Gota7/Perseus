@@ -89,7 +89,7 @@ struct OamPreset
     u32 behavior;
     u32 objectId;
     u8 dataFlag;
-    u64 data[2];
+    u8 data[16];
     DespawnMode despawnMode;
     RespawnMode respawnMode;
     OamLayer layer;

@@ -27,6 +27,16 @@ struct Loop
     u8 numRepetitions;
 };
 
+// Runtime track info.
+struct RuntimeTrackInfo
+{
+    f32 volume = 1.0;
+    f32 pitch = 1.0;
+    bool paused = false;
+    u32 dataOff;
+    void* stream;
+};
+
 // Stream asset.
 struct MAudioStream : Asset
 {
@@ -44,8 +54,7 @@ struct MAudioStream : Asset
     GFile gFile;
     u32 dataOff;
     int currSample = 0;
-    bool paused = false;
-    void* stream; // TODO: SOUND QUEUE WITH MULTIPLE STREAMS!!!
+    bool fromBin;
 
     // Implement.
     std::string AssetFolderName();
@@ -55,19 +64,18 @@ struct MAudioStream : Asset
     void FromBIN(const std::string& name);
     void WriteXML(const std::string& destPath);
     void WriteBIN(const std::string& destPath);
-    f32 Volume();
-    f32 Pitch();
-    void SetVolume(f32 volume);
-    void SetPitch(f32 pitch);
-    void Play();
-    void Pause();
+    f32 Volume(int trackNum);
+    f32 Pitch(int trackNum);
+    void SetVolume(int trackNum, f32 volume);
+    void SetPitch(int trackNum, f32 pitch);
+    void Play(int trackNum);
+    void Pause(int trackNum);
     void Stop();
     void Update();
     void Unload();
 
 private:
-    f32 volume = 1.0;
-    f32 pitch = 1.0;
-    int ReadSamples(int numSamples);
+    RuntimeTrackInfo* trackInfo;
+    int ReadSamples(RuntimeTrackInfo* r, int numSamples);
     void PositionReaderAtSample(int sampleNum);
 };

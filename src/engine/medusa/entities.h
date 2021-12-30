@@ -8,5 +8,5 @@ struct MEntity
     u32 id;
     int x;
     int y;
-    u64 data[2];
+    u8 data[16];
 };

@@ -83,6 +83,17 @@ void MAudioStream::FromXML(const string& name)
         child = child->NextSiblingElement();
     }
 
+    // Assume tracks.
+    if (numTracks == 0)
+    {
+        Track t;
+        for (int i = 0; i < numChannels; i++)
+        {
+            t.channels.push_back(i);
+        }
+        t.numChannels = numChannels;
+    }
+
     // Data info.
     gFile.position = 0x14 + fmtSize;
     if (gFile.ReadStrFixed(4) != "data")
@@ -104,9 +115,15 @@ void MAudioStream::FromXML(const string& name)
             break;
     }
     dataOff = gFile.position;
-    stream = ALoadAudioStream(sampleRate, encoding == AudioEncoding::PCM8 ? 8 : 16, numChannels);
-    ASetAudioStreamVolume(stream, volume);
-    ASetAudioStreamPitch(stream, pitch);
+    trackInfo = new RuntimeTrackInfo[numTracks];
+    for (int i = 0; i < numTracks; i++)
+    {
+        RuntimeTrackInfo* r = &trackInfo[i];
+        r->stream = ALoadAudioStream(sampleRate, encoding == AudioEncoding::PCM8 ? 8 : 16, numChannels);
+        ASetAudioStreamVolume(r->stream, r->volume);
+        ASetAudioStreamPitch(r->stream, r->pitch);
+    }
+    fromBin = false;
 
 }
 
@@ -149,9 +166,15 @@ void MAudioStream::FromBIN(const std::string& name)
 
     // We are at the data offset.
     dataOff = (u32)gFile.position;
-    stream = ALoadAudioStream(sampleRate, encoding == AudioEncoding::PCM8 ? 8 : 16, numChannels);
-    ASetAudioStreamVolume(stream, volume);
-    ASetAudioStreamPitch(stream, pitch);
+    trackInfo = new RuntimeTrackInfo[numTracks];
+    for (int i = 0; i < numTracks; i++)
+    {
+        RuntimeTrackInfo* r = &trackInfo[i];
+        r->stream = ALoadAudioStream(sampleRate, encoding == AudioEncoding::PCM8 ? 8 : 16, numChannels);
+        ASetAudioStreamVolume(r->stream, r->volume);
+        ASetAudioStreamPitch(r->stream, r->pitch);
+    }
+    fromBin = true;
 
 }
 
@@ -165,64 +188,80 @@ void MAudioStream::WriteBIN(const std::string& destPath)
 
 }
 
-f32 MAudioStream::Volume()
+f32 MAudioStream::Volume(int trackNum)
 {
-    return volume;
+    RuntimeTrackInfo* r = &trackInfo[trackNum];
+    return r->volume;
 }
 
-f32 MAudioStream::Pitch()
+f32 MAudioStream::Pitch(int trackNum)
 {
-    return pitch;
+    RuntimeTrackInfo* r = &trackInfo[trackNum];
+    return r->pitch;
 }
 
-void MAudioStream::SetVolume(f32 volume)
+void MAudioStream::SetVolume(int trackNum, f32 volume)
 {
-    this->volume = volume;
-    ASetAudioStreamVolume(stream, volume);
+    RuntimeTrackInfo* r = &trackInfo[trackNum];
+    r->volume = volume;
+    ASetAudioStreamVolume(r->stream, volume);
 }
 
-void MAudioStream::SetPitch(f32 pitch)
+void MAudioStream::SetPitch(int trackNum, f32 pitch)
 {
-    this->pitch = pitch;
-    ASetAudioStreamPitch(stream, pitch);
+    RuntimeTrackInfo* r = &trackInfo[trackNum];
+    r->pitch = pitch;
+    ASetAudioStreamPitch(r->stream, pitch);
 }
 
-void MAudioStream::Play()
+void MAudioStream::Play(int trackNum)
 {
-    if (paused)
+    RuntimeTrackInfo* r = &trackInfo[trackNum];
+    if (r->paused)
     {
-        AResumeAudioStream(stream);
-        paused = false;
+        AResumeAudioStream(r->stream);
+        r->paused = false;
     }
     else
     {
-        APlayAudioStream(stream);
-        gFile.position = dataOff;
+        APlayAudioStream(r->stream);
     }
 }
 
-void MAudioStream::Pause()
+void MAudioStream::Pause(int trackNum)
 {
-    APauseAudioStream(stream);
-    paused = true;
+    RuntimeTrackInfo* r = &trackInfo[trackNum];
+    APauseAudioStream(r->stream);
+    r->paused = true;
 }
 
 void MAudioStream::Stop()
 {
-    AStopAudioStream(stream);
+    for (int i = 0; i < numTracks; i++)
+    {
+        RuntimeTrackInfo* r = &trackInfo[i];
+        AStopAudioStream(r->stream);
+        r->paused = false;
+    }
     currSample = 0;
-    paused = false;
 }
 
 void MAudioStream::Update()
 {
 
-    // Check to see if more samples are needed.
-    if (!AIsAudioStreamPlaying(stream)) return;
-    if (AIsAudioStreamProcessed(stream))
+    // For each track.
+    for (int i = 0; i < numTracks; i++)
     {
-        int read = ReadSamples(BLOCK_SIZE);
-        if (read == 0) Stop();
+
+        // Check to see if more samples are needed.
+        RuntimeTrackInfo* r = &trackInfo[i];
+        if (!AIsAudioStreamPlaying(r->stream)) return;
+        if (AIsAudioStreamProcessed(r->stream))
+        {
+            int read = ReadSamples(r, BLOCK_SIZE);
+            if (read == 0) Stop();
+        }
+
     }
 
 }
@@ -230,10 +269,14 @@ void MAudioStream::Update()
 void MAudioStream::Unload()
 {
     gFile.Close();
-    AUnloadAudioStream(stream);
+    for (int i = 0; i < numTracks; i++)
+    {
+        AUnloadAudioStream(trackInfo[i].stream);
+    }
+    delete[] trackInfo;
 }
 
-int MAudioStream::ReadSamples(int toRead)
+int MAudioStream::ReadSamples(RuntimeTrackInfo* r, int toRead)
 {
 
     // Find end.
@@ -257,13 +300,25 @@ int MAudioStream::ReadSamples(int toRead)
         }
     }
     if (end > numSamples) end = numSamples;
+
+    // Implementation here depends on if loaded from a binary or not.
+    if (fromBin)
+    {
+
+    }
+    else
+    {
+
+    }
+
+    // TODO: CORRECT SAMPLE LOADING FOR TRACKS!!!
     PositionReaderAtSample(start);
     u32 size = (end - start) * numChannels;
     if (encoding == PCM16) size *= 2;
     if (encoding == IMAADPCM) size /= 2;
     void* buff = malloc(size);
     gFile.Read(buff, size);
-    AUpdateAudioStream(stream, buff, end - start);
+    AUpdateAudioStream(r->stream, buff, end - start);
     free(buff);
     if (!forceNonzeroRet) currSample = end;
     return forceNonzeroRet ? 1 : (end - start);
